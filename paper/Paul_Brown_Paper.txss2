@@ -1,0 +1,101 @@
+{
+    "InternalPDFViewer": {
+        "Embedded": true,
+        "File": "build/Paul_Brown_Paper.pdf"
+    },
+    "Session": {
+        "Bookmarks": [
+            {
+                "bookmarkNumber": 1,
+                "fileName": "../../Newton Project/Operation Optimization/Report.tex",
+                "lineNumber": 118,
+                "text": "Report.tex\n\\author{Paul Brown}"
+            }
+        ],
+        "CurrentFile": "Paul_Brown_Paper.tex",
+        "FileVersion": 1,
+        "Files": [
+            {
+                "Col": 18,
+                "EditorGroup": 0,
+                "FileName": "Paul_Brown_Paper.tex",
+                "FirstLine": 274,
+                "FoldedLines": "",
+                "Line": 291
+            },
+            {
+                "Col": 33,
+                "EditorGroup": 0,
+                "FileName": "title.tex",
+                "FirstLine": 0,
+                "FoldedLines": "",
+                "Line": 17
+            },
+            {
+                "Col": 38,
+                "EditorGroup": 0,
+                "FileName": "abstract.tex",
+                "FirstLine": 0,
+                "FoldedLines": "",
+                "Line": 0
+            },
+            {
+                "Col": 70,
+                "EditorGroup": 0,
+                "FileName": "01_introduction.tex",
+                "FirstLine": 0,
+                "FoldedLines": "",
+                "Line": 3
+            },
+            {
+                "Col": 0,
+                "EditorGroup": 0,
+                "FileName": "02_lit_survey.tex",
+                "FirstLine": 0,
+                "FoldedLines": "",
+                "Line": 0
+            },
+            {
+                "Col": 0,
+                "EditorGroup": 0,
+                "FileName": "03_proposed_method.tex",
+                "FirstLine": 0,
+                "FoldedLines": "",
+                "Line": 0
+            },
+            {
+                "Col": 0,
+                "EditorGroup": 0,
+                "FileName": "04_data_sources.tex",
+                "FirstLine": 0,
+                "FoldedLines": "",
+                "Line": 0
+            },
+            {
+                "Col": 122,
+                "EditorGroup": 0,
+                "FileName": "05_implementation.tex",
+                "FirstLine": 0,
+                "FoldedLines": "",
+                "Line": 3
+            },
+            {
+                "Col": 62,
+                "EditorGroup": 0,
+                "FileName": "06_results.tex",
+                "FirstLine": 0,
+                "FoldedLines": "",
+                "Line": 3
+            },
+            {
+                "Col": 104,
+                "EditorGroup": 0,
+                "FileName": "99_conclusion.tex",
+                "FirstLine": 0,
+                "FoldedLines": "",
+                "Line": 3
+            }
+        ],
+        "MasterFile": "Paul_Brown_Paper.tex"
+    }
+}
