@@ -1,4 +1,18 @@
 \section{Data Sources}
 \label{sec:data-source}
 
-Describe where the data comes from for the work described.
+The PV time series used for this analysis was the recorded output power of the rooftop PV array on the METU EEE Department machinery building.
+Recordings were obtained by downloading them from the logger integrated with the inverter for the PV array.
+Logged data was recorded at approximately five-minute intervals.
+For the forecasting method, the logged data was aligned to exact five-minute intervals even with the hour using linear interpolation and then aggregated to hourly intervals by the mean.
+For the operational model, these values were scaled to the rating of the demonstration system.
+
+
+The weather forecast data used for this analysis was obtained from multiple sources.
+Firstly, WRF Meteogram forecasts have been saved from the Turkish Meteorology Directorate (MGM)\cite{MGM_Meteogram}.
+Since the MGM meteograms are available as a image rather than as structured data, code was developed to extract data from the plots in the meteogram and output it in csv format\cite{MeteogramExtractGithubRepo}.
+Secondly, forecasts were obtained from the SolCast PV-focused weather service\cite{Solcast}.
+SolCast weather forecasts include both a cloudiness forecast as well as an irradiance (ghi) forecast along with many other forecast quantities.
+SolCast data is provided using an API, so no special data extraction or conversion was needed.
+
+% OpenWeather weather service\cite{OpenWeather} was downloaded but currently is not being used.

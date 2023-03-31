@@ -1,4 +1,71 @@
 \section{Proposed Method}
 \label{sec:proposed-method}
 
-Describe the proposed method in detail. This is the most important part of the paper.
+The proposed method utilizes meteorological forecast data such as forecast cloudiness or forecast irradiance to forecast the PV system output for the upcoming 12 to 72 hours, which called the ``day-ahead forecast''.
+It is assumed that these meteorological forecasts will be updated once or at most a few times per day.
+Throughout the day, the current day's PV output forecast is updated by applying one of several available time-series forecasting techniques.
+A high-level diagram of the proposed forecast method is shown in \cref{fig:PV_forecast_flowchart}.
+
+\begin{figure}[t]
+	\centering
+	\includegraphics[width=1.0\columnwidth]{PV_forecast_flowchart}
+	\caption{Flowchart of Forecasting Method}
+	\label{fig:PV_forecast_flowchart}
+\end{figure}
+
+
+\subsection{Day-Ahead Forecasts}
+
+The proposed day-ahead forecasting method combines historical PV output data with historical weather data to infer the relationship between weather and PV output by fitting a simple regression model.
+
+Some pre-processing of the historical data was done prior to  fitting the regression model.
+Data from periods of darkness, when output goes to small or negative values, were removed.
+This also removed periods when the PV array was covered with snow.
+
+How the regression model was applied depends on the weather data that was used.
+If the weather data used represented the incoming solar energy, then the regression was done directly between the weather data and PV output.
+Weather data utilized of this type was the global horizontal irradiance (ghi).
+
+On the other hand, weather data that represented the attenuation of incoming solar energy was regressed against the clear-sky ratio for PV output.
+Two methods were developed for calculating the clear-sky ratio.
+The first method was to roughly model the PV array using data for its geographic position and orientation to obtain modeled clear-sky output.
+The second method was to estimate the maximum possible output at each time of day by calculating the maximum observed PV output for each time of day in the historical data window.
+This second method had the advantage of not requiring any modeling information about the PV array.
+It had the further advantage of naturally incorporating effects of shading of the array during parts of the day due to obstructions.
+Since the data set used for this analysis did not include any shading of the array, this last benefit could not be assessed in comparison to other methods.
+
+The formula used to calculate the clear-sky ratio is shown in \cref{eqn:clear-sky-ratio},
+where $r_{cs}$ is the clear-sky ratio, $P_{out}$ is the PV output, and $P_{cs}$ is the clear-sky PV output.
+In order to provide numerical stability of the clear-sky ratio for periods when the clear-sky output is small, the parameters $\epsilon$ and $r_\epsilon$ were incorporated so that as $P_{cs}$ goes to zero, the clear-sky ratio $r_{cs}$ will approach $r_\epsilon$.
+
+\begin{equation}
+	\label{eqn:clear-sky-ratio}
+	r_{cs} = \frac{P_{out} + r_\epsilon \epsilon}{P_{cs} + \epsilon}
+\end{equation}
+
+The regression model was then fit to the transformed data.
+A second-degree polynomial model was used in the case of ghi weather forecasts as well as the case of cloudiness weather forecasts.
+The fit model was then applied to the weather forecast data available for the forecast period.
+If applicable, the resulting forecast was then converted from a forecast clear-sky ratio back to PV output.
+
+\subsection{Intra-day Updates}
+
+Based on the assumption that updated weather forecasts are in general not obtained throughout the day, the current-day PV output forecast was updated using time-series techniques. Several approaches to intra-day updates were investigated as described in the following paragraphs.
+
+\paragraph{AR(2) on actual output with exogenous variable}
+An auto-regressive time series model with two lags was applied to the actual clear-sky output ratio with the day-ahead clear-sky output forecast included in the model as an exogenous variable.
+
+\paragraph{SARIMAX}
+A seasonal auto-regressive integrated moving average model was applied to the actual PV power output with day-ahead output power forecast included in the model as an exogenous variable.
+This model is characterized by parameters for the number of lags, order of differencing, and order of the moving average, for both the trend and seasonal components.
+A variety of parameter combinations was tested against the data, and the best performing model was with AR(1) and MA(2), with the day-ahead PV output power forecast as an exogenous variable, and with no differencing or seasonal components included.
+
+\paragraph{AR(2) on residual of PV output}
+An auto-regressive time series model with two lags was applied to the residual between actual PV output and the day-ahead forecast PV output. The forecast output of the model was then added as a correction term to the day-ahead PV output forecast for the intra-day period.
+
+\paragraph{AR(2) on residual of clear-sky ratio}
+An auto-regressive time series model with two lags was applied to the residual between the actual clear-sky ratio and the day-ahead forecast clear-sky ratio. The forecast output of the model was then added as a correction term to the day-ahead clear-sky ratio forecast for the intra-day period.
+
+\paragraph{Scaling}
+The day-ahead forecast for the rest of the day was scaled using the ratio between the actual output in the previous period and the day-ahead forecast for the previous period.
+
