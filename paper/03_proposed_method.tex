@@ -15,6 +15,7 @@ A high-level diagram of the proposed forecast method is shown in \cref{fig:PV_fo
 
 
 \subsection{Day-Ahead Forecasts}
+\label{sec:method-day-ahead}
 
 The proposed day-ahead forecasting method combines historical PV output data with historical weather data to infer the relationship between weather and PV output by fitting a simple regression model.
 
@@ -49,6 +50,7 @@ The fit model was then applied to the weather forecast data available for the fo
 If applicable, the resulting forecast was then converted from a forecast clear-sky ratio back to PV output.
 
 \subsection{Intra-day Updates}
+\label{sec:method-intraday}
 
 Based on the assumption that updated weather forecasts are in general not obtained throughout the day, the current-day PV output forecast was updated using time-series techniques. Several approaches to intra-day updates were investigated as described in the following paragraphs.
 

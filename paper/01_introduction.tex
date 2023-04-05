@@ -1,4 +1,30 @@
 \section{Introduction}
 \label{sec:intro}
 
-Write a new introduction. Don't risk plagiarizing your previous paper.
+\IEEEPARstart{O}{ver} recent decades, many factors have driven significant changes in the electrical power industry,
+including climate change,
+the growing use of renewable energy resources,
+and ongoing rural electrification.
+For agricultural consumers, electrification enables increased yields and economic development.
+Ref. \cite{Mandelli2016} reviews technology and applications for off-grid systems for rural electrification.
+
+For agricultural applications, photovoltaic (PV) energy is generally well aligned with water needs\cite{Aliyu2018}.
+Ref. \cite{Aliyu2018} reviews numerous solar-powered water pumping applications around the world while \cite{Muhsen2017} reviews the PV and water pumping modeling, design, and control approaches in the literature.
+
+One of the barriers to efficient use of PV energy in the grid and in micro-grids
+is the difficulty of accurately predicting future energy availability.
+As reviewed in \cite{Antonanzas2016}, many techniques have been developed for forecasting PV energy over various time horizons.
+The authors of this paper have been working on techniques for optimal energy planning for agricultural microgrids.
+For operational optimization, an effective day-ahead PV forecasting method was needed.
+In recent years, LSTM-based neural networks have emerged as the state-of-the art
+for day-ahead PV energy forecasting
+\todo{I have a bunch of papers to look at for this, but I haven't read them yet. For space planning, I've just included just three citations, not necessarily the best ones.}
+%\cite{Aillaud2020,Aslam2021,Gao2019,Gu2021,Liu2021,Luo2022,Mei2020,Qu2021,Wang2019,Wang2021,Wang2022,Yang2019,Yu2020,Zhang2020}.
+\cite{Aillaud2020,Aslam2021,Gao2019}.
+
+As promising as deep learning networks are for day-ahead forecasting,
+they have the drawback of requiring 
+a lot of historical data and significant computational resources for training.
+\todo{You should look through the papers to see how much historical data they really need. Make sure this is actually affirmed in the literature before you state it.}
+Therefore the authors developed methods for day-ahead PV forecasting with a design goal to be ``lightweight'', that is to require minimal weather forecast data, site-specific modeling data, historical generation data, and computational resources.
+The target computing platform for the developed method is a single-board computer such as the Raspberry Pi or similar.
