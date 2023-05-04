@@ -6,10 +6,18 @@ The method utilized only basic weather forecast data and did not require large c
 The proposed methods were compared to each other and to a reference persistence forecast.
 The proposed methods gave lower MSE compared to the persistence forecast
 over a test data set of
-\pdfmarkupcomment[markup=Highlight,color=yellow]{\_\_\_}{Update!} days.
+103 days.
 Of the weather forecast sources that were compared,
-\pdfmarkupcomment[markup=Highlight,color=yellow]{\_\_\_}{Update!}
+SolCast cloudiness
 obtained the lowest MSE.
 Of the intra-day update methods that were compared,
-\pdfmarkupcomment[markup=Highlight,color=yellow]{\_\_\_}{Update!}
+the SARIMAX method
 obtained the lowest MSE.
+The forecast methods with the best MSE metrics were integrated into a simulated
+agricultural microgrid with model-predictive control,
+and the total system costs were compared to operation with persistence forecasts.
+The costs for the system's simulated operation using persistence forecasts were somewhat better than the performance using the proposed method.
+This unexpected result may warrant additional investigation.
+
+One direction for future work is to extend the proposed lightweight method for PV power forecasting to provide probabilistic forecasts, quantifying the uncertainty in the forecast.
+Such forecasts may then be used in stochastic model predictive control for the microgrid controls to make more robust energy planning decisions.

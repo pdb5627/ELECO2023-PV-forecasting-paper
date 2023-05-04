@@ -85,6 +85,7 @@
 %\usepackage{diagbox}
 
 \usepackage{booktabs}
+\usepackage{multirow}  % If needed for any  multi-row table cells
 
 % Required for package pdfcomment later
 \usepackage{xcolor}
@@ -99,10 +100,12 @@
   captionpos=b}%
 
 % Enable nice comments
-\usepackage{pdfcomment}
+\usepackage[final]{pdfcomment}
 %
+% color={0.045 0.278 0.643}  % Blue
+% color={0.234 0.867 0.211 % Light green
 \newcommand{\commentontext}[2]{\colorbox{yellow!60}{#1}\pdfcomment[color={0.234 0.867 0.211},hoffset=-6pt,voffset=10pt,opacity=0.5]{#2}}
-\newcommand{\commentatside}[1]{\pdfcomment[color={0.045 0.278 0.643},icon=Note]{#1}}
+\newcommand{\commentatside}[1]{\pdfcomment[color=yellow,icon=Note]{#1}}
 %
 % Compatibility with packages todo, easy-todo, todonotes
 \newcommand{\todo}[1]{\commentatside{#1}}
