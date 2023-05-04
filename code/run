@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -ex
+
+# This is the master script for the capsule. When you click "Reproducible Run", the code in this file will execute.
+gunzip -c data/datasets.sqlite.gz > data/datasets.sqlite
+python -u dayahead_method_comparison.py
+python -u intraday_method_comparison.py
+python -u mpc_demo.py
+gzip -9 data/datasets.sqlite
+
