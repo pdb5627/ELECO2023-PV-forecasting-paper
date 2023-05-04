@@ -23,9 +23,8 @@ from ems.modeling.modeling_window import ModelingWindow
 
 program_name = 'intraday_method_comparison'
 program_runtime = datetime.now()
-results_dir = Path('../results') / program_name / f'{program_runtime:%Y%m%d_%H%M}'
+results_dir = Path('../results') / program_name
 results_dir.mkdir(parents=True, exist_ok=True)
-latest_results_dir = results_dir / '..' / 'latest'
 
 logfile = results_dir / f'{program_name}.log'
 
@@ -69,8 +68,7 @@ def intraday_update_demo(location):
     :param location: Location dict.
     :return:
     """
-    prev_run = 'latest'
-    dayahead_fx_file = Path('../results/dayahead_method_comparison/') / prev_run / 'all_dayahead_fx_solcast_clouds.parquet'
+    dayahead_fx_file = Path('../results/dayahead_method_comparison/') / 'all_dayahead_fx_solcast_clouds.parquet'
     all_dayahead_fx = pd.read_parquet(dayahead_fx_file)
     ems.forecast.utils.all_dayahead_fx = all_dayahead_fx
 
@@ -145,8 +143,7 @@ def intraday_comparison(location):
     :param location:
     :return:
     """
-    prev_run = 'latest'
-    dayahead_fx_file = Path('../results/dayahead_method_comparison/') / prev_run / 'all_dayahead_fx_solcast_clouds.parquet'
+    dayahead_fx_file = Path('../results/dayahead_method_comparison/') / 'all_dayahead_fx_solcast_clouds.parquet'
     all_dayahead_fx = pd.read_parquet(dayahead_fx_file)
     ems.forecast.utils.all_dayahead_fx = all_dayahead_fx
 
@@ -251,9 +248,6 @@ def main(argv=None):
     # The dataset for comparison should go back to 3/30/2021 and should be at least 30h ahead forecast.
     if 'metrics' in to_do:
         intraday_comparison(location)
-        
-    latest_results_dir.unlink(missing_ok=True)
-    latest_results_dir.symlink_to(results_dir)
 
     return 0
 

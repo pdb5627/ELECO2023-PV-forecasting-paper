@@ -6,9 +6,8 @@ import logging.config
 
 program_name = 'mpc_demo'
 program_runtime = datetime.now()
-results_dir = Path('../results') / program_name / f'{program_runtime:%Y%m%d_%H%M}'
+results_dir = Path('../results') / program_name
 results_dir.mkdir(parents=True, exist_ok=True)
-latest_results_dir = results_dir / '..' / 'latest'
 
 logfile = results_dir / f'{program_name}.log'
 logfile_debug = results_dir / f'{program_name}_debug.log'
@@ -795,7 +794,7 @@ if __name__ == '__main__':
         if run_optimization:
             prev_run = None
             if prev_run:
-                data_path = Path('results/mpc_demo/') / prev_run / f'{seed=},{dayahead_method=},{intraday_method=}'
+                data_path = Path('results/mpc_demo/') / f'{seed=},{dayahead_method=},{intraday_method=}'
                 precomputed_optimization_models, precomputed_simulation_models = load_all_models(data_path)
             else:
                 precomputed_optimization_models, precomputed_simulation_models = None, None
@@ -806,15 +805,7 @@ if __name__ == '__main__':
                                                                                         precomputed_simulation_models)
         else:
 
-            prev_run = 'latest'
-            data_path = Path('../results/mpc_demo/') / prev_run / f'{seed=},{dayahead_method=},{intraday_method=}'
+            data_path = Path('../results/mpc_demo/') / f'{seed=},{dayahead_method=},{intraday_method=}'
             optimization_models, simulation_models = load_models_from_file(data_path)
 
         summarize_and_plot(optimization_models, simulation_models)
-        
-    latest_results_dir.unlink(missing_ok=True)
-    latest_results_dir.symlink_to(results_dir)
-
-
-
-

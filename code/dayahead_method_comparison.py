@@ -26,9 +26,8 @@ from ems.forecast.dayahead import irr_forecast, cs_ratio_forecast, dayahead_fx_p
 
 program_name = 'dayahead_method_comparison'
 program_runtime = datetime.now()
-results_dir = Path('../results') / program_name / f'{program_runtime:%Y%m%d_%H%M}'
+results_dir = Path('../results') / program_name
 results_dir.mkdir(parents=True, exist_ok=True)
-latest_results_dir = results_dir / '..' / 'latest'
 
 logfile = results_dir / f'{program_name}.log'
 
@@ -277,9 +276,6 @@ def main(argv=None):
     logger.info(results_metrics_daily_total)
     results_metrics_daily_total.style.to_latex(results_dir / 'error_comparison_table_daily_total.tex')
     results_metrics_daily_total.to_csv(results_dir / 'error_comparison_table_daily_total.csv')
-    
-    latest_results_dir.unlink(missing_ok=True)
-    latest_results_dir.symlink_to(results_dir)
 
     return 0
 
