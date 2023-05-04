@@ -16,7 +16,7 @@ Following findings from \cite{Almeida2015},
 In addition to the proposed method, a reference day-ahead persistence forecast was also generated.
 The persistence forecast was that the PV output for the upcoming period will be the same as the PV output for the same time of day in the previous day.
 
-Following \cite{Pedro2012} and \cite{Gigoni2018}, the methods were evaluated using mean square error (MSE), mean absolute error (MAE), and mean bias error (MBE) as the error measure.
+Following \cite{Pedro2012} and \cite{Gigoni2018}, the methods were evaluated using root mean square error (RMSE), mean absolute error (MAE), and mean bias error (MBE) as the error measure.
 These metrics were calculated for of the whole time series as well as the for the forecast total energy output for each day.
 
 \begin{table}[tbh]
@@ -25,15 +25,15 @@ These metrics were calculated for of the whole time series as well as the for th
 	\label{table:dayahead-metrics}
 	\begin{tabular}{lccc}
 		\toprule
-		                       &   MSE    &   MAE    &    MBE    \\
+		                       &   RMSE   &   MAE    &    MBE    \\
         \midrule
-		Persistence & 0.015722 & 0.062034 & 0.000559 \\
-		%Persistence 3 Days Avg & 0.012154 & 0.056241 & 0.000765 \\
-		%Persistence 28 Days Avg & 0.010510 & 0.056196 & 0.012774 \\
-		SolCast Cloudiness & 0.006049 & 0.039775 & -0.008772 \\
-		SolCast GHI & 0.006440 & 0.039048 & -0.011762 \\
-		%MGM Meteogram1 & 0.007450 & 0.045221 & -0.007386 \\
-		MGM Meteogram & 0.007343 & 0.046865 & 0.002728 \\
+		Persistence & 0.125386 & 0.062034 & 0.000559 \\
+		%Persistence 3 Days Avg & 0.110245 & 0.056241 & 0.000765 \\
+		%Persistence 28 Days Avg & 0.102519 & 0.056196 & 0.012774 \\
+		SolCast Cloudiness & 0.077777 & 0.039775 & -0.008772 \\
+		SolCast GHI & 0.080251 & 0.039048 & -0.011762 \\
+		%MGM Meteogram1 & 0.086312 & 0.045221 & -0.007386 \\
+		MGM Meteogram & 0.085693 & 0.046865 & 0.002728 \\
 		\bottomrule
 	\end{tabular}
 \end{table}
@@ -44,15 +44,15 @@ These metrics were calculated for of the whole time series as well as the for th
 	\label{table:dayahead-metrics-sum}
 	\begin{tabular}{lccc}
 		\toprule
-		                       &   MSE    &   MAE    &    MBE    \\
+		                       &   RMSE   &   MAE    &    MBE    \\
         \midrule
-		Persistence & 2.254678 & 1.154667 & 0.013278 \\
-		%Persistence 3 Days Avg & 1.849556 & 1.069204 & 0.018169 \\
-		%Persistence 28 Days Avg & 1.653687 & 1.049198 & 0.303316 \\
-		SolCast Cloudiness & 0.575034 & 0.583713 & -0.208281 \\
-		SolCast GHI & 0.569468 & 0.564057 & -0.279288 \\
-		%MGM Meteogram1 & 0.757048 & 0.676501 & -0.171603 \\
-		MGM Meteogram & 0.792630 & 0.699723 & 0.063379 \\
+		Persistence & 1.501558 & 1.154667 & 0.013278 \\
+		%Persistence 3 Days Avg & 1.359984 & 1.069204 & 0.018169 \\
+		%Persistence 28 Days Avg & 1.285958 & 1.049198 & 0.303316 \\
+		SolCast Cloudiness & 0.758310 & 0.583713 & -0.208281 \\
+		SolCast GHI & 0.754631 & 0.564057 & -0.279288 \\
+		%MGM Meteogram1 & 0.870085 & 0.676501 & -0.171603 \\
+		MGM Meteogram & 0.890298 & 0.699723 & 0.063379 \\
 		\bottomrule
 	\end{tabular}
 \end{table}
@@ -89,7 +89,9 @@ This day-ahead forecast was then updated for each hour of the day using each of 
 In addition to the proposed methods, a reference intra-day update forecast based on persistence was produced.
 The persistence forecast was that the clear-sky ratio for the remainder of the day would be the same as the clear-sky ratio from the previous time period.
 
-For comparison, the MSE for the different intra-day forecast update methods was computed for the forecast for one hour, two hours, and six hours ahead. The result error metrics are shown in \cref{table:intraday-metrics}.
+For comparison, the RMSE, MAE, and MBE for the different intra-day forecast update methods were computed
+for the forecast for the periods 0 to 1, 1 to 2, and 6 to 7 hours after of the time at which the forecast is generated.
+The result error metrics are shown in \cref{table:intraday-metrics}.
 
 \begin{table}
 	\centering
@@ -98,30 +100,28 @@ For comparison, the MSE for the different intra-day forecast update methods was 
 	\label{table:intraday-metrics}
 	\begin{tabular}{clccc}
 		\toprule
-		\shortstack{Hours\\Ahead} & Method & MSE & MAE & MBE \\
+		\shortstack{Hours\\Ahead} & Method & RMSE & MAE & MBE \\
 		\midrule
-		%A & B & C\tnote{1} & D & E\tnote{1} \\
-		%G & H\tnote{2} & I & J & K \\
-		\multirow[c]{6}{*}{1} & Persistence & 0.004409 & 0.032320 & -0.001955 \\
-		& fx\_output\tnote{1} & 0.003743 & 0.031664 & -0.003686 \\
-		& fx\_csratio\tnote{2} & 0.003803 & 0.033566 & 0.006633 \\
-		& exog\tnote{3} & 0.003917 & 0.035667 & 0.008020 \\
-		& SARIMAX & 0.003726 & 0.032159 & -0.001687 \\
-		& Scaling & 0.004425 & 0.032737 & 0.000284 \\
+		\multirow[c]{6}{*}{0 - 1} & Persistence & 0.0664003 & 0.032348 & -0.001927 \\
+		& fx\_output\tnote{1} & 0.06125357 & 0.031521 & -0.003686 \\
+		& fx\_csratio\tnote{2} & 0.06128621 & 0.032877 & 0.006633 \\
+		& exog\tnote{3} & 0.06212085 & 0.035210 & 0.008020 \\
+		& SARIMAX & 0.06127805 & 0.032177 & -0.001687 \\
+		& Scaling & 0.06652067 & 0.032765 & 0.000284 \\
 		\midrule
-		\multirow[c]{6}{*}{2} & Persistence & 0.007663 & 0.041868 & -0.002397 \\
-		& fx\_output\tnote{1} & 0.005233 & 0.037428 & -0.005418 \\
-		& fx\_csratio\tnote{2} & 0.005684 & 0.041822 & 0.011613 \\
-		& exog\tnote{3} & 0.006098 & 0.045131 & 0.013845 \\
-		& SARIMAX & 0.005166 & 0.037879 & -0.002296 \\
-		& Scaling & 0.007671 & 0.042636 & 0.001627 \\
+		\multirow[c]{6}{*}{1 - 2} & Persistence & 0.08753856 & 0.041895 & -0.002370 \\
+		& fx\_output\tnote{1} & 0.07238784 & 0.037227 & -0.006002 \\
+		& fx\_csratio\tnote{2} & 0.07435052 & 0.040628 & 0.009484 \\
+		& exog\tnote{3} & 0.07698052 & 0.044319 & 0.012378 \\
+		& SARIMAX & 0.07227724 & 0.037944 & -0.002893 \\
+		& Scaling & 0.08758425 & 0.042662 & 0.001654 \\
 		\midrule
-		\multirow[c]{6}{*}{6} & persistence & 0.009497 & 0.047607 & -0.007485 \\
-		& fx\_output\tnote{1} & 0.005756 & 0.039047 & -0.007912 \\
-		& fx\_csratio\tnote{2} & 0.006253 & 0.042456 & 0.003602 \\
-		& exog\tnote{3} & 0.006594 & 0.044206 & 0.003111 \\
-		& SARIMAX & 0.005675 & 0.038983 & -0.006740 \\
-		& Scaling & 0.009314 & 0.046933 & -0.000351 \\
+		\multirow[c]{6}{*}{6 - 7} & persistence & 0.09745255 & 0.047634 & -0.007458 \\
+		& fx\_output\tnote{1} & 0.07619711 & 0.039071 & -0.008300 \\
+		& fx\_csratio\tnote{2} & 0.07803845 & 0.041770 & 0.002292 \\
+		& exog\tnote{3} & 0.0809506 & 0.044051 & 0.002318 \\
+		& SARIMAX & 0.0761643 & 0.039420 & -0.006929 \\
+		& Scaling & 0.09650907 & 0.046960 & -0.000324 \\
 		\bottomrule
 	\end{tabular}
 	\begin{tablenotes}
@@ -133,54 +133,6 @@ For comparison, the MSE for the different intra-day forecast update methods was 
 \end{threeparttable}
 \end{table}
 
-
-%\begin{table}[tbh]
-%	%\centering
-%	\begin{threeparttable}[b]
-%	\caption{Intraday forecast metrics}
-%	\label{table:intraday-metrics}
-%\begin{tabular}{clccc}
-%	\toprule
-%	\shortstack{Hours\\Ahead} & Method & MSE & MAE & MBE \\
-%	\midrule
-%	\multirow[c]{6}{*}{1} & Persistence & 0.004409 & 0.032320 & -0.001955 \\
-%	& fx\_output\tnote{1} & 0.003743 & 0.031664 & -0.003686 \\
-%	& fx\_csratio\tnote{2} & 0.003803 & 0.033566 & 0.006633 \\
-%	& exog\tnote{3} & 0.003917 & 0.035667 & 0.008020 \\
-%	& sarimax & 0.003726 & 0.032159 & -0.001687 \\
-%	& scaling & 0.004425 & 0.032737 & 0.000284 \\
-%	\midrule
-%	\multirow[c]{6}{*}{2} & Persistence & 0.007663 & 0.041868 & -0.002397 \\
-%	& fx\_output\tnote{1} & 0.005233 & 0.037428 & -0.005418 \\
-%	& fx\_csratio\tnote{2} & 0.005684 & 0.041822 & 0.011613 \\
-%	& exog\tnote{3} & 0.006098 & 0.045131 & 0.013845 \\
-%	& SARIMAX & 0.005166 & 0.037879 & -0.002296 \\
-%	& Scaling & 0.007671 & 0.042636 & 0.001627 \\
-%	\midrule
-%%	\multirow[c]{6}{*}{2} & persistence & 0.008979 & 0.045546 & -0.003484 \\
-%%	& fx\_output & 0.005466 & 0.038242 & -0.006428 \\
-%%	& fx\_csratio & 0.006135 & 0.044152 & 0.013051 \\
-%%	& exog & 0.006836 & 0.048039 & 0.015323 \\
-%%	& sarimax & 0.005388 & 0.038507 & -0.002922 \\
-%%	& scaling & 0.008988 & 0.046789 & 0.002116 \\
-%%	\midrule
-%	\multirow[c]{6}{*}{6} & persistence & 0.009497 & 0.047607 & -0.007485 \\
-%	& fx\_output\tnote{1} & 0.005756 & 0.039047 & -0.007912 \\
-%	& fx\_csratio\tnote{2} & 0.006253 & 0.042456 & 0.003602 \\
-%	& exog\tnote{3} & 0.006594 & 0.044206 & 0.003111 \\
-%	& SARIMAX & 0.005675 & 0.038983 & -0.006740 \\
-%	& Scaling & 0.009314 & 0.046933 & -0.000351 \\
-%	\bottomrule
-%	\begin{tablenotes}
-%		\footnotesize
-%		\item[1] AR(2) on residual of PV output.
-%		\item[2] AR(2) on residual of clear-sky ratio
-%		\item[3] AR(2) on actual output with exogenous variable
-%	\end{tablenotes}
-%\end{threeparttable}
-%\end{tabular}
-%
-%\end{table}
 
 \begin{figure}[tbh]
 	\centering
@@ -227,11 +179,11 @@ A flowchart of the MPC simulation is shown in \cref{fig:mpc-simulation-flowchart
 \item SolCast cloudiness weather forecasts for day-ahead forecast with SARIMAX-based intraday updates
 \item Perfect ``oracle'' forecast where operation is optimized with the actual future PV output data
 \end{itemize}
-The costs for the system's simulated operation using persistence forecasts were somewhat better than the performance using the proposed method.
-This may potentially be explained by the relatively better bias error performance of the persistence forecasts.
-Additional investigation to further improve the forecasting method may be warranted.
+The costs for the system's simulated operation using proposed forecast method was approximately
+3\% lower than the performance using persistence forecasts.
 
 The objective function value for optimized operation with a perfect forecast illustrates the value of improved forecasts.
+An additional 8\% reduction in the objective function value would be possible with perfect forecasts.
 
 \begin{table}
 	\caption{MPC Simulation Results - Objective Function Value}
@@ -242,13 +194,13 @@ The objective function value for optimized operation with a perfect forecast ill
           & {\shortstack{Persistence\\Forecast}} & {\shortstack{Proposed\\Method}} & {\shortstack{Perfect\\Forecast}} \\
 		  & {(\$, 2020)} & {(\$, 2020)}                    & {(\$, 2020)} \\
 		\midrule
-		Grid energy cost            & 65350 & 72195 & 58052 \\
-		Battery use cost            &  8120 &  7979 &  8047 \\
-		Inadequate water cost       &    90 &    99 &     0 \\
-		Battery mode switching cost &   246 &   244 &   230 \\
-		Pump switching cost         &    94 &   104 &    80 \\
+		Grid energy cost            & 65350 & 63764 & 58052 \\
+		Battery use cost            &  8117 &  8178 &  8047 \\
+		Inadequate water cost       &   865 &    71 &     0 \\
+		Battery mode switching cost &   246 &   236 &   230 \\
+		Pump switching cost         &    94 &    98 &    80 \\
 		\midrule
-		TOTAL                       & 82846 & 90474 & 66418 \\
+		TOTAL                       & 74672 & 72347 & 66418 \\
 		\bottomrule
 	\end{tabular}
 \end{table}
