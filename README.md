@@ -1,4 +1,4 @@
-This repository contains the source code for the paper submitted to [ISGT-EU 2023](https://ieee-isgt-europe.org/), 
+This repository contains the source code for the paper submitted to [ELECO 2023](http://www.eleco.org.tr/), 
 "Lightweight Photovoltaic Forecasting Method for Agricultural Microgrids", by Paul Brown and Murat Göl.
 The paper was prepared using LaTeX, and the necessary files  are saved under [paper](paper)
 with a build of [the PDF output](paper/build/Paul_Brown_Paper.pdf) available.
