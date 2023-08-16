@@ -6,7 +6,7 @@ It is assumed that these meteorological forecasts will be updated once or at mos
 Throughout the day, the current day's PV output forecast is updated by applying one of several available time-series forecasting techniques.
 A high-level diagram of the proposed forecast method is shown in \cref{fig:PV_forecast_flowchart}.
 
-\begin{figure}[t]
+\begin{figure}[ht]
 	\centering
 	\includegraphics[width=1.0\columnwidth]{PV_forecast_flowchart}
 	\caption{Flowchart of Forecasting Method}
@@ -38,7 +38,7 @@ Since the data set used for this analysis did not include any shading of the arr
 The formula used to calculate the clear-sky ratio is shown in \cref{eqn:clear-sky-ratio},
 where $r_{cs}$ is the clear-sky ratio, $P_{out}$ is the PV output, and $P_{cs}$ is the clear-sky PV output.
 In order to provide numerical stability of the clear-sky ratio for periods when the clear-sky output is small, the parameters $\epsilon$ and $r_\epsilon$ were incorporated so that as $P_{cs}$ goes to zero, the clear-sky ratio $r_{cs}$ will approach $r_\epsilon$.
-
+%
 \begin{equation}
 	\label{eqn:clear-sky-ratio}
 	r_{cs} = \frac{P_{out} + r_\epsilon \epsilon}{P_{cs} + \epsilon}

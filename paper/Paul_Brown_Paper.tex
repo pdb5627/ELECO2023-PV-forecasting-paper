@@ -10,29 +10,20 @@
 % PBROWN: Use this to suppress the warning when including multiple matplotlib PDF plots on the same page
 \pdfsuppresswarningpagegroup=1
 
+\RequirePackage{fix-cm}
+
 %cmap has to be loaded before any font package (such as newtxmath)
 \RequirePackage{cmap}
 
 % Found eleco2013 code in ELECO 2017 conference archive
-\documentclass{article}
-\usepackage{eleco2013,amssymb,amsmath}
-\usepackage{indentfirst}
 
-\usepackage{caption}
+\documentclass[9pt]{extarticle}
+\usepackage{eleco}
 
-\captionsetup[table]{labelfont=bf,labelformat=simple,labelsep=period}
-\captionsetup[figure]{labelfont=bf,labelformat=simple,labelsep=period}
-
-\setcounter{page}{1} \sloppy \ninept
-
-% use nicer font for code
-%\usepackage[zerostyle=b,scaled=.75]{newtxtt}
+\usepackage{orcidlink}
 
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc} %support umlauts in the input
-% I added the following to get Times Roman in math. Otherwise the g's looked really different.
-% See https://tex.stackexchange.com/questions/9685/math-and-times-font#9686
-\usepackage[italic]{mathastext}
 
 \usepackage{graphicx}
 
@@ -46,10 +37,7 @@
 %\addto\extrasenglish{\languageshorthands{ngerman}\useshorthands{"}}
 
 % backticks (`) are rendered as such in verbatim environment. See https://tex.stackexchange.com/a/341057/9075 for details.
-\usepackage{upquote}
-
-%extended enumerate, such as \begin{compactenum}
-\usepackage{paralist}
+%\usepackage{upquote}
 
 %for easy quotations: \enquote{text}
 \usepackage{csquotes}
@@ -67,7 +55,7 @@
     protrusion=alltext-nott]{microtype}%
 \fi%
 % \texttt{test -- test} keeps the "--" as "--" (and does not convert it to an en dash)
-\DisableLigatures{encoding = T1, family = tt* }
+%\DisableLigatures{encoding = T1, family = tt* }
 
 %tweak \url{...}
 \usepackage{url}
@@ -94,13 +82,13 @@
 \usepackage{xcolor}
 
 % For listings
-\usepackage{listings}
-\lstset{%
-  basicstyle=\ttfamily,%
-  columns=fixed,%
-  basewidth=.5em,%
-  xleftmargin=0.5cm,%
-  captionpos=b}%
+%\usepackage{listings}
+%\lstset{%
+%  basicstyle=\ttfamily,%
+%  columns=fixed,%
+%  basewidth=.5em,%
+%  xleftmargin=0.5cm,%
+%  captionpos=b}%
 
 % Enable nice comments
 \usepackage[final]{pdfcomment}
@@ -115,7 +103,7 @@
 % Compatiblity with package fixmetodonotes
 \newcommand{\TODO}[1]{\commentatside{#1}}
 
-% Bibliopgraphy enhancements
+% Bibliography enhancements
 %  - enable \cite[prenote][]{ref}
 %  - enable \cite{ref1,ref2}
 % Alternative: \usepackage{cite}, which enables \cite{ref1, ref2} only (otherwise: Error message: "White space in argument")
@@ -138,10 +126,10 @@
 
 % Enable hyperlinked author names in the case of \citet
 % Source: https://tex.stackexchange.com/a/76075/9075
-\usepackage{etoolbox}
-\makeatletter
-\patchcmd{\NAT@test}{\else \NAT@nm}{\else \NAT@hyper@{\NAT@nm}}{}{}
-\makeatother
+%\usepackage{etoolbox}
+%\makeatletter
+%\patchcmd{\NAT@test}{\else \NAT@nm}{\else \NAT@hyper@{\NAT@nm}}{}{}
+%\makeatother
 
 % Enable that parameters of \cref{}, \ref{}, \cite{}, ... are linked so that a reader can click on the number an jump to the target in the document
 \usepackage{hyperref}
@@ -159,24 +147,21 @@
 
 %enable \cref{...} and \Cref{...} instead of \ref: Type of reference included in the link
 \usepackage[capitalise,nameinlink]{cleveref}
-%\crefname{lstlisting}{\lstlistingname}{\lstlistingname}
-%\Crefname{lstlisting}{Listing}{Listings}
 % The following are to comply with the IEEE style guide.
 \crefformat{equation}{#2(#1)#3}
 \Crefformat{equation}{#2Equation (#1)#3}
 \crefname{figure}{Fig.}{Figs.}
-%\Crefname{figure}{Fig.}{Figs.}
 
 %Following definitions are outside of IfPackageLoaded; inside, they are not visible
 %
 %Intermediate solution for hyperlinked refs. See https://tex.stackexchange.com/q/132420/9075 for more information.
-\newcommand{\Vlabel}[1]{\label[line]{#1}\hypertarget{#1}{}}
-\newcommand{\lref}[1]{\hyperlink{#1}{\FancyVerbLineautorefname~\ref*{#1}}}
+%\newcommand{\Vlabel}[1]{\label[line]{#1}\hypertarget{#1}{}}
+%\newcommand{\lref}[1]{\hyperlink{#1}{\FancyVerbLineautorefname~\ref*{#1}}}
+%
+%\newenvironment{listing}[1][htbp!]{\begin{figure}[#1]}{\end{figure}}
+%\newcounter{listing}
 
-\newenvironment{listing}[1][htbp!]{\begin{figure}[#1]}{\end{figure}}
-\newcounter{listing}
-
-\usepackage{xspace}
+%\usepackage{xspace}
 %\newcommand{\eg}{e.\,g.\xspace}
 %\newcommand{\ie}{i.\,e.\xspace}
 \newcommand{\eg}{e.\,g.,\ }
@@ -197,9 +182,9 @@
 %\DeclareMathSymbol{\powerset}{\mathord}{MnSyC}{180}
 
 % *** SUBFIGURE PACKAGES ***
-\usepackage[caption=false,font=footnotesize]{subfig}
+%\usepackage[caption=false,font=footnotesize]{subfig}
 
-\usepackage{stfloats}
+%\usepackage{stfloats}
 
 
 
@@ -219,25 +204,19 @@
 
 
 %\bibliographystyle{chicago}   % For drafts only, to make it easier to see which references have been used.
-\bibliographystyle{IEEEtran} % IEEEtranN is the natbib compatible bst file
+%\bibliographystyle{IEEEtran} % IEEEtranN is the natbib compatible bst file
 %\usepackage{showkeys}          % For drafts only
 
 
 \begin{document}
 %\IEEEoverridecommandlockouts
-%\bstctlcite{IEEEexample:BSTcontrol}
+\bstctlcite{IEEEexample:BSTcontrol}
 
 \input{title}
 
-% use for special paper notices
-%\IEEEspecialpapernotice{(Invited Paper)}
-
 % make the title area
 \maketitle
-\ninept
-
 \begin{abstract}
-  \bf
   \input{abstract}
 \end{abstract}
 
@@ -265,7 +244,7 @@ This work is supported by the Scientific and Technological
 Research Council of Turkey (TUBITAK) under grant number
 119N313.
 
-% The Acknowledgment section is commented out.
+\section{References}
 
 % trigger a \newpage just before the given reference
 % number - used to balance the columns on the last page

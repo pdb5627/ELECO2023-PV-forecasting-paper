@@ -13,19 +13,35 @@ Using data available prior to sunrise, the proposed day-ahead forecast method fr
 to forecast the upcoming one-day (24 hr) PV output.
 Following findings from \cite{Almeida2015},
 28 days of historical data was used to fit the regression models.
+An example day-ahead forecast using the Solcast GHI forecast is shown in \cref{fig:dayahead-forecast-solcast}
+and an example day-ahead forecast using the MGM meteogram cloudiness forecast is shown in \cref{fig:dayahead-forecast-meteogram}.
+
+%SolCastForecasts_w_regr_out  page 41
+\begin{figure}[!ht]
+	\centering
+	% trim=left botm right top
+	\includegraphics[width=1.0\columnwidth]{SolCastGHIForecasts-cropped.pdf}
+	% Convert to png: pdftoppm SolCastForecasts_w_regr_out_p41.pdf SolCastForecasts_w_regr_out_p41 -singlefile -cropbox -png -r 1200
+	%\includegraphics[width=6.5in]{SolCastForecasts_w_regr_out_p41.png}
+	\caption{Example Day-ahead Forecast using Solcast GHI Forecast}
+	\label{fig:dayahead-forecast-solcast}
+\end{figure}
+
 In addition to the proposed method, a reference day-ahead persistence forecast was also generated.
 The persistence forecast was that the PV output for the upcoming period will be the same as the PV output for the same time of day in the previous day.
 
 Following \cite{Pedro2012} and \cite{Gigoni2018}, the methods were evaluated using root mean square error (RMSE), mean absolute error (MAE), and mean bias error (MBE) as the error measure.
 These metrics were calculated for of the whole time series as well as the for the forecast total energy output for each day.
 
-\begin{table}[tbh]
+\begin{table}[!t]
 	\centering
 	\caption{Day-ahead forecast metrics}
 	\label{table:dayahead-metrics}
-	\begin{tabular}{lccc}
+	\sisetup{round-mode=places,
+		     round-precision=3}
+	\begin{tabular}{lS[table-format=1.3]S[table-format=1.3]>{\sisetup{round-precision=4}}S[table-format=-1.4]}
 		\toprule
-		                       &   RMSE   &   MAE    &    MBE    \\
+		                       &   {RMSE}   &   {MAE}    &    {MBE}    \\
         \midrule
 		Persistence & 0.125386 & 0.062034 & 0.000559 \\
 		%Persistence 3 Days Avg & 0.110245 & 0.056241 & 0.000765 \\
@@ -38,13 +54,15 @@ These metrics were calculated for of the whole time series as well as the for th
 	\end{tabular}
 \end{table}
 
-\begin{table}[tbh]
+\begin{table}[!t]
 	\centering
 	\caption{Day-ahead forecast metrics on daily sums}
 	\label{table:dayahead-metrics-sum}
-	\begin{tabular}{lccc}
+	\sisetup{round-mode=places,
+		round-precision=3}
+	\begin{tabular}{lS[table-format=1.3]S[table-format=1.3]S[table-format=-1.3]}
 		\toprule
-		                       &   RMSE   &   MAE    &    MBE    \\
+		                       &   {RMSE}   &   {MAE}    &    {MBE}    \\
         \midrule
 		Persistence & 1.501558 & 1.154667 & 0.013278 \\
 		%Persistence 3 Days Avg & 1.359984 & 1.069204 & 0.018169 \\
@@ -56,17 +74,6 @@ These metrics were calculated for of the whole time series as well as the for th
 		\bottomrule
 	\end{tabular}
 \end{table}
-
-%SolCastForecasts_w_regr_out  page 41
-\begin{figure}[tbh]
-	\centering
-	% trim=left botm right top
-	\includegraphics[width=1.0\columnwidth]{SolCastGHIForecasts-cropped.pdf}
-	% Convert to png: pdftoppm SolCastForecasts_w_regr_out_p41.pdf SolCastForecasts_w_regr_out_p41 -singlefile -cropbox -png -r 1200
-	%\includegraphics[width=6.5in]{SolCastForecasts_w_regr_out_p41.png}
-	\caption{Example Day-ahead Forecast using Solcast GHI Forecast}
-	\label{fig:dayahead-forecast-solcast}
-\end{figure}
 
 
 %MeteogramForecasts_cs_ratio  page 41
@@ -93,14 +100,16 @@ For comparison, the RMSE, MAE, and MBE for the different intra-day forecast upda
 for the forecast for the periods 0 to 1, 1 to 2, and 6 to 7 hours after of the time at which the forecast is generated.
 The result error metrics are shown in \cref{table:intraday-metrics}.
 
-\begin{table}
+\begin{table}[htb]
 	\centering
 \begin{threeparttable}
 	\caption{Intraday forecast metrics}
 	\label{table:intraday-metrics}
-	\begin{tabular}{clccc}
+	\sisetup{round-mode=places,
+		round-precision=3}
+	\begin{tabular}{clS[table-format=1.3]S[table-format=1.3] >{\sisetup{round-precision=4}}S[table-format=-1.4]}
 		\toprule
-		\shortstack{Hours\\Ahead} & Method & RMSE & MAE & MBE \\
+		\shortstack{Hours\\Ahead} & {Method} & {RMSE} & {MAE} & {MBE} \\
 		\midrule
 		\multirow[c]{6}{*}{0 - 1} & Persistence & 0.0664003 & 0.032348 & -0.001927 \\
 		& fx\_output\tnote{1} & 0.06125357 & 0.031521 & -0.003686 \\
@@ -155,9 +164,9 @@ The MPC optimization was performed using the forecast PV data, including intra-d
 The operation for the following period was then simulated using actual PV data.
 A flowchart of the MPC simulation is shown in \cref{fig:mpc-simulation-flowchart}.
 
-\begin{figure}[t]
+\begin{figure}[thb]
 	\centering
-	\fontsize{6.7pt}{9pt}\selectfont
+	\fontsize{6pt}{7pt}\selectfont
 	\def\svgwidth{0.8\columnwidth}
 	\input{figs/demo_system.pdf_tex}
 	\caption{Energy Dispatch Demonstration System}
@@ -165,7 +174,7 @@ A flowchart of the MPC simulation is shown in \cref{fig:mpc-simulation-flowchart
 \end{figure}
 
 % Figure copied from last progress report
-\begin{figure}[tbh]
+\begin{figure}[thb]
 	\centering
 	% trim=left botm right top
 	\includegraphics[width=1.0\columnwidth]{MPC Demo System Diagram.pdf}
@@ -174,31 +183,35 @@ A flowchart of the MPC simulation is shown in \cref{fig:mpc-simulation-flowchart
 \end{figure}
 
 \Cref{table:mpc-simulation-results} shows results of the MPC simulation. Simulations were performed for three forecasts:
+
 \begin{itemize}
 \item Persistence forecast
 \item SolCast cloudiness weather forecasts for day-ahead forecast with SARIMAX-based intraday updates
 \item Perfect ``oracle'' forecast where operation is optimized with the actual future PV output data
 \end{itemize}
+
 The costs for the system's simulated operation using proposed forecast method was approximately
 3\% lower than the performance using persistence forecasts.
 
 The objective function value for optimized operation with a perfect forecast illustrates the value of improved forecasts.
 An additional 8\% reduction in the objective function value would be possible with perfect forecasts.
 
-\begin{table}
+\begin{table}[!htb]
 	\caption{MPC Simulation Results - Objective Function Value}
 	\label{table:mpc-simulation-results}
 	\centering
+	\setlength\tabcolsep{0.6mm}
 	\begin{tabular}{lS[table-format=5]S[table-format=5]S[table-format=5]}
 		\toprule
+		  Cost component
           & {\shortstack{Persistence\\Forecast}} & {\shortstack{Proposed\\Method}} & {\shortstack{Perfect\\Forecast}} \\
 		  & {(\$, 2020)} & {(\$, 2020)}                    & {(\$, 2020)} \\
 		\midrule
-		Grid energy cost            & 65350 & 63764 & 58052 \\
-		Battery use cost            &  8117 &  8178 &  8047 \\
-		Inadequate water cost       &   865 &    71 &     0 \\
-		Battery mode switching cost &   246 &   236 &   230 \\
-		Pump switching cost         &    94 &    98 &    80 \\
+		Grid energy            & 65350 & 63764 & 58052 \\
+		Battery use            &  8117 &  8178 &  8047 \\
+		Inadequate water       &   865 &    71 &     0 \\
+		Battery mode switching &   246 &   236 &   230 \\
+		Pump switching         &    94 &    98 &    80 \\
 		\midrule
 		TOTAL                       & 74672 & 72347 & 66418 \\
 		\bottomrule
