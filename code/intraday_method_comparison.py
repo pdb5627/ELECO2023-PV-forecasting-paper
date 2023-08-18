@@ -14,8 +14,8 @@ import logging.config
 import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
-from sklearn.metrics import mean_squared_error, mean_absolute_error
-from ems.forecast.utils import load_hist, mean_bias_error, load_dayahead_fx
+from sklearn.metrics import mean_absolute_error
+from ems.forecast.utils import load_hist, root_mean_square_error, mean_bias_error, load_dayahead_fx
 import ems.forecast.utils
 from ems.forecast.intraday import intraday_update
 from ems.forecast.generate_pv_fx import generate_pv_fx
@@ -172,7 +172,7 @@ def intraday_comparison(location):
     logger.info(f'dayahead_updates archive goes from {all_dayahead_fx["dt"].iloc[0]} '
                 f'to {all_dayahead_fx["dt"].iloc[-1]}')
 
-    metrics_list = [mean_squared_error, mean_absolute_error, mean_bias_error]
+    metrics_list = [root_mean_square_error, mean_absolute_error, mean_bias_error]
     results_metrics = pd.DataFrame(index=pd.MultiIndex.from_product([fx_offsets, intraday_methods],
                                                                     names=['Offset', 'Method']),
                                    columns=['MSE', 'MAE', 'MBE'], dtype=float)
