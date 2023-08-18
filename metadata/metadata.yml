@@ -1,6 +1,6 @@
 metadata_version: 1
 name: Paper -- Lightweight Photovoltaic Forecasting Method for Agricultural Microgrids
-  (ISGT-EU 2023)
+  (ELECO 2023)
 description: |-
   A lightweight forecasting method was developed for day-ahead (12 to 72-hours) and intra-day forecasting of photovoltaic (PV) array power output for use with energy management of agricultural microgrids.
   The proposed method allows the PV output to be forecast without requiring extensive compute resources or high-bandwidth communication channel to the PV site.
