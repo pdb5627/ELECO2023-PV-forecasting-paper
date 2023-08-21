@@ -112,11 +112,11 @@ The result error metrics are shown in \cref{table:intraday-metrics}.
 		\shortstack{Hours\\Ahead} & {Method} & {RMSE} & {MAE} & {MBE} \\
 		\midrule
 		\multirow[c]{6}{*}{0 - 1} & Persistence & 0.0664003 & 0.032348 & -0.001927 \\
-		& fx\_output\tnote{1} & 0.06125357 & 0.031521 & -0.003686 \\
-		& fx\_csratio\tnote{2} & 0.06128621 & 0.032877 & 0.006633 \\
-		& exog\tnote{3} & 0.06212085 & 0.035210 & 0.008020 \\
-		& SARIMAX & 0.06127805 & 0.032177 & -0.001687 \\
-		& Scaling & 0.06652067 & 0.032765 & 0.000284 \\
+		& fx\_output\tnote{1} & 0.06125357 & 0.031521 & -0.004008 \\
+		& fx\_csratio\tnote{2} & 0.06128621 & 0.032877 & 0.005391 \\
+		& exog\tnote{3} & 0.06212085 & 0.035210 & 0.007142 \\
+		& SARIMAX & 0.06127805 & 0.032177 & -0.002071 \\
+		& Scaling & 0.06652067 & 0.032765 & 0.000312 \\
 		\midrule
 		\multirow[c]{6}{*}{1 - 2} & Persistence & 0.08753856 & 0.041895 & -0.002370 \\
 		& fx\_output\tnote{1} & 0.07238784 & 0.037227 & -0.006002 \\
@@ -196,6 +196,13 @@ The costs for the system's simulated operation using proposed forecast method wa
 The objective function value for optimized operation with a perfect forecast illustrates the value of improved forecasts.
 An additional 8\% reduction in the objective function value would be possible with perfect forecasts.
 
+% Data for this table is compiled from three different output files, one for each column
+% Column 2 (Persistence forecast): /results/mpc_demo/seed=42,dayahead_method='persistence',intraday_method='persistence'/simulated_total_cost.tex
+% Column 3 (Proposed method): /results/mpc_demo/seed=42,dayahead_method='solcast_clouds',intraday_method='sarimax'/simulated_total_cost.tex
+% Column 4 (Perfect forecast): /results/mpc_demo/seed=42,dayahead_method='oracle',intraday_method='none'/simulated_total_cost.tex
+% The data is manually entered into this file.
+% NOTE: The solutions to the MPC problems are guaranteed to be reproducible and may vary somewhat from run to run and are dependent on the solver.
+
 \begin{table}[!htb]
 	\caption{MPC Simulation Results - Objective Function Value}
 	\label{table:mpc-simulation-results}
@@ -207,13 +214,13 @@ An additional 8\% reduction in the objective function value would be possible wi
           & {\shortstack{Persistence\\Forecast}} & {\shortstack{Proposed\\Method}} & {\shortstack{Perfect\\Forecast}} \\
 		  & {(\$, 2020)} & {(\$, 2020)}                    & {(\$, 2020)} \\
 		\midrule
-		Grid energy            & 65350 & 63764 & 58052 \\
-		Battery use            &  8117 &  8178 &  8047 \\
-		Inadequate water       &   865 &    71 &     0 \\
-		Battery mode switching &   246 &   236 &   230 \\
-		Pump switching         &    94 &    98 &    80 \\
+		Grid energy            & 65350 & 63466 & 58052 \\
+		Battery use            &  8117 &  7964 &  8047 \\
+		Inadequate water       &   865 &     0 &    10 \\
+		Battery mode switching &   246 &   228 &   230 \\
+		Pump switching         &    94 &    90 &    80 \\
 		\midrule
-		TOTAL                       & 74672 & 72347 & 66418 \\
+		TOTAL                       & 74672 & 71749 & 66418 \\
 		\bottomrule
 	\end{tabular}
 \end{table}
