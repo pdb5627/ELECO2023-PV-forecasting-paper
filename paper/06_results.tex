@@ -16,15 +16,27 @@ Following findings from \cite{Almeida2015},
 An example day-ahead forecast using the Solcast GHI forecast is shown in \cref{fig:dayahead-forecast-solcast}
 and an example day-ahead forecast using the MGM meteogram cloudiness forecast is shown in \cref{fig:dayahead-forecast-meteogram}.
 
-%SolCastForecasts_w_regr_out  page 41
+% /results/dayahead_method_comparison/SolCastGHIForecasts.pdf  page 27, with margins cropped
 \begin{figure}[!ht]
 	\centering
 	% trim=left botm right top
-	\includegraphics[width=1.0\columnwidth]{SolCastGHIForecasts-cropped.pdf}
+	\includegraphics[width=1.0\columnwidth]{SolCastGHIForecasts-p27-cropped.pdf}
 	% Convert to png: pdftoppm SolCastForecasts_w_regr_out_p41.pdf SolCastForecasts_w_regr_out_p41 -singlefile -cropbox -png -r 1200
 	%\includegraphics[width=6.5in]{SolCastForecasts_w_regr_out_p41.png}
 	\caption{Example Day-ahead Forecast using Solcast GHI Forecast}
 	\label{fig:dayahead-forecast-solcast}
+\end{figure}
+
+
+% This figure is from the file
+% /results/dayahead_method_comparison/MeteogramForecasts_csratio_max.pdf  page 27, with margins cropped
+\begin{figure}[tbh]
+	\centering
+	% trim=left botm right top
+	\includegraphics[width=1.0\columnwidth]{MeteogramForecasts_csratio_max-p27-cropped.pdf}
+	%\includegraphics[width=6.5in]{MeteogramForecasts_cs_ratio_p41.png}
+	\caption{Example Day-ahead Forecast using MGM Meteogram Weather Forecast}
+	\label{fig:dayahead-forecast-meteogram}
 \end{figure}
 
 In addition to the proposed method, a reference day-ahead persistence forecast was also generated.
@@ -33,6 +45,8 @@ The persistence forecast was that the PV output for the upcoming period will be 
 Following \cite{Pedro2012} and \cite{Gigoni2018}, the methods were evaluated using root mean square error (RMSE), mean absolute error (MAE), and mean bias error (MBE) as the error measure.
 These metrics were calculated for of the whole time series as well as the for the forecast total energy output for each day.
 
+% Data for this table is from the file
+% /results/dayahead_method_comparison/error_comparison_table.tex
 \begin{table}[!t]
 	\centering
 	\caption{Day-ahead forecast metrics}
@@ -54,6 +68,8 @@ These metrics were calculated for of the whole time series as well as the for th
 	\end{tabular}
 \end{table}
 
+% Data for this table is from the file
+% /results/dayahead_method_comparison/error_comparison_table_daily_total.tex
 \begin{table}[!t]
 	\centering
 	\caption{Day-ahead forecast metrics on daily sums}
@@ -76,17 +92,6 @@ These metrics were calculated for of the whole time series as well as the for th
 \end{table}
 
 
-%MeteogramForecasts_cs_ratio  page 41
-\begin{figure}[tbh]
-	\centering
-	% trim=left botm right top
-	\includegraphics[width=1.0\columnwidth]{MeteogramForecasts_csratio_max-cropped.pdf}
-	%\includegraphics[width=6.5in]{MeteogramForecasts_cs_ratio_p41.png}
-	\caption{Example Day-ahead Forecast using MGM Meteogram Weather Forecast}
-	\label{fig:dayahead-forecast-meteogram}
-\end{figure}
-
-
 \subsection{Intra-day Updates}
 
 To evaluate and compare the intra-day forecast update methods,
@@ -100,7 +105,9 @@ For comparison, the RMSE, MAE, and MBE for the different intra-day forecast upda
 for the forecast for the periods 0 to 1, 1 to 2, and 6 to 7 hours after of the time at which the forecast is generated.
 The result error metrics are shown in \cref{table:intraday-metrics}.
 
-\begin{table}[htb]
+% Table data from
+% /results/intraday_method_comparison/error_comparison_table.tex
+\begin{table}[tb]
 	\centering
 \begin{threeparttable}
 	\caption{Intraday forecast metrics}
@@ -111,26 +118,26 @@ The result error metrics are shown in \cref{table:intraday-metrics}.
 		\toprule
 		\shortstack{Hours\\Ahead} & {Method} & {RMSE} & {MAE} & {MBE} \\
 		\midrule
-		\multirow[c]{6}{*}{0 - 1} & Persistence & 0.0664003 & 0.032348 & -0.001927 \\
-		& fx\_output\tnote{1} & 0.06125357 & 0.031521 & -0.004008 \\
-		& fx\_csratio\tnote{2} & 0.06128621 & 0.032877 & 0.005391 \\
-		& exog\tnote{3} & 0.06212085 & 0.035210 & 0.007142 \\
-		& SARIMAX & 0.06127805 & 0.032177 & -0.002071 \\
-		& Scaling & 0.06652067 & 0.032765 & 0.000312 \\
+		\multirow[c]{6}{*}{0 - 1} & Persistence & 0.066402 & 0.032348 & -0.001927 \\
+		& fx\_output\tnote{1} & 0.061250 & 0.031521 & -0.004008 \\
+		& fx\_csratio\tnote{2} & 0.061287 & 0.032877 & 0.005391 \\
+		& exog\tnote{3} & 0.062121 & 0.035210 & 0.007142 \\
+		& SARIMAX & 0.061276 & 0.032177 & -0.002071 \\
+		& Scaling & 0.066521 & 0.032765 & 0.000312 \\
 		\midrule
-		\multirow[c]{6}{*}{1 - 2} & Persistence & 0.08753856 & 0.041895 & -0.002370 \\
-		& fx\_output\tnote{1} & 0.07238784 & 0.037227 & -0.006002 \\
-		& fx\_csratio\tnote{2} & 0.07435052 & 0.040628 & 0.009484 \\
-		& exog\tnote{3} & 0.07698052 & 0.044319 & 0.012378 \\
-		& SARIMAX & 0.07227724 & 0.037944 & -0.002893 \\
-		& Scaling & 0.08758425 & 0.042662 & 0.001654 \\
+		\multirow[c]{6}{*}{1 - 2} & Persistence & 0.087537 & 0.041895 & -0.002370 \\
+		& fx\_output\tnote{1} & 0.072388 & 0.037227 & -0.006002 \\
+		& fx\_csratio\tnote{2} & 0.074352 & 0.040628 & 0.009484 \\
+		& exog\tnote{3} & 0.076981 & 0.044319 & 0.012378 \\
+		& SARIMAX & 0.072276 & 0.037944 & -0.002893 \\
+		& Scaling & 0.087582 & 0.042662 & 0.001654 \\
 		\midrule
-		\multirow[c]{6}{*}{6 - 7} & persistence & 0.09745255 & 0.047634 & -0.007458 \\
-		& fx\_output\tnote{1} & 0.07619711 & 0.039071 & -0.008300 \\
-		& fx\_csratio\tnote{2} & 0.07803845 & 0.041770 & 0.002292 \\
-		& exog\tnote{3} & 0.0809506 & 0.044051 & 0.002318 \\
-		& SARIMAX & 0.0761643 & 0.039420 & -0.006929 \\
-		& Scaling & 0.09650907 & 0.046960 & -0.000324 \\
+		\multirow[c]{6}{*}{6 - 7} & persistence & 0.097451 & 0.047634 & -0.007458 \\
+		& fx\_output\tnote{1} & 0.076197 & 0.039071 & -0.008300 \\
+		& fx\_csratio\tnote{2} & 0.078040 & 0.041770 & 0.002292 \\
+		& exog\tnote{3} & 0.080952 & 0.044051 & 0.002318 \\
+		& SARIMAX & 0.076163 & 0.039420 & -0.006929 \\
+		& Scaling & 0.096509 & 0.046960 & -0.000324 \\
 		\bottomrule
 	\end{tabular}
 	\begin{tablenotes}
@@ -142,11 +149,12 @@ The result error metrics are shown in \cref{table:intraday-metrics}.
 \end{threeparttable}
 \end{table}
 
-
-\begin{figure}[tbh]
+% Figure from
+% /results/intraday_method_comparison/IntradayUpdate-sarimax.pdf, p4, cropped to top plot
+\begin{figure}[tb]
 	\centering
 	% trim=left botm right top
-	\includegraphics[width=0.85\columnwidth]{IntradayUpdate-sarimax-cropped.pdf}
+	\includegraphics[width=0.85\columnwidth]{IntradayUpdate-sarimax-p4-cropped.pdf}
 	%\includegraphics[width=5.53in]{Intraday Forecasts_p4.png}
 	\caption{Intra-day Forecast Updates - SARIMAX method}
 	\label{fig:intraday-forecast}
@@ -158,7 +166,31 @@ The result error metrics are shown in \cref{table:intraday-metrics}.
 To demonstrate the effectiveness of the developed methods in the target application,
 the forecasts were input into an agricultural microgrid operational optimization and simulation program.
 A system diagram of the demonstration system is shown in \cref{fig:demo-system}.
-The optimization formulation was previously presented in \cite{Brown2022}.
+The objective function for optimization is shown in \cref{eqn:objective-function}, where
+$P_{grid,t}$ is the power drawn from the grid in each time period,
+$P_{BSS,ch,t}$ and $P_{BSS,disch,t}$ are the battery system (BSS) charging and discharging powers,
+$V_{use,desired,d}$ and $V_{use,d}$ are the desired and actual effective daily water use volumes,
+$s_{BSS,t}$ is a binary variable representing the BSS charging mode, and
+$s_{pump1,t}$ is a binary variable representing Pump 1 operating state.
+$C_{grid,t}$, $C_{BSS}$, $C_{w,short}$, $C_{BSS,switching}$, and $C_{Pump1,switching}$ are the respective cost coefficients.
+The optimization formulation was previously presented in full in \cite{Brown2022}.
+%
+\begin{equation}
+	\label{eqn:objective-function}
+	\begin{split}
+		\min &\underbrace{\sum_t C_{grid,t} \ P_{grid,t} \ \Delta t}_{\textrm{Cost of grid power}}
+		\\
+		{+} \: &\underbrace{\sum_t C_{BSS} \left( P_{BSS,ch,t} + P_{BSS,disch,t} \right) \Delta t}_{\textrm{Cost of battery usage}}
+		\\
+		{+} \: &\underbrace{C_{w,short} \sum_d \max\left(\left(V_{use,desired,d} - V_{use,d}\right), 0\right)}_{\textrm{Penalty for inadequate water}}
+		\\
+		{+} \: &\underbrace{C_{BSS,switching} \sum_t \left| s_{BSS,t} - s_{BSS,t-1} \right|}_{\textrm{BSS mode-switching penalty}}
+		\\
+		{+} \: &\underbrace{C_{Pump1,switching} \sum_t \left| s_{pump1,t} - s_{pump1,t-1} \right|}_{\textrm{Pump 1 switching penalty}}
+	\end{split}
+\end{equation}
+
+
 The use of model-predictive control (MPC) was simulated by using the optimizer to choose the optimal ratio of using excess available PV energy between energy storage in a battery energy storage system (BSS) and utilization to pump water into a reservoir.
 The MPC optimization was performed using the forecast PV data, including intra-day updates.
 The operation for the following period was then simulated using actual PV data.
@@ -173,7 +205,6 @@ A flowchart of the MPC simulation is shown in \cref{fig:mpc-simulation-flowchart
 	\label{fig:demo-system}
 \end{figure}
 
-% Figure copied from last progress report
 \begin{figure}[thb]
 	\centering
 	% trim=left botm right top
@@ -201,8 +232,6 @@ An additional 8\% reduction in the objective function value would be possible wi
 % Column 3 (Proposed method): /results/mpc_demo/seed=42,dayahead_method='solcast_clouds',intraday_method='sarimax'/simulated_total_cost.tex
 % Column 4 (Perfect forecast): /results/mpc_demo/seed=42,dayahead_method='oracle',intraday_method='none'/simulated_total_cost.tex
 % The data is manually entered into this file.
-% NOTE: The solutions to the MPC problems are guaranteed to be reproducible and may vary somewhat from run to run and are dependent on the solver.
-
 \begin{table}[!htb]
 	\caption{MPC Simulation Results - Objective Function Value}
 	\label{table:mpc-simulation-results}

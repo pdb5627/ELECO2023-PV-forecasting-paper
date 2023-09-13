@@ -25,9 +25,18 @@ This also removed periods when the PV array was covered with snow.
 
 How the regression model was applied depends on the weather data that was used.
 If the weather data used represented the incoming solar energy, then the regression was done directly between the weather data and PV output.
-Weather data utilized of this type was the global horizontal irradiance (ghi).
+For this work, global horizontal irradiance (ghi) was modeled in this way.
+A linear model of the form shown in \cref{eqn:ghi-regression-model} was fit to the historical data, where
+$P_{PV}$ is the actual or forecast PV output power in per-unit of the array's nominal output rating,
+$k_1$ is a linear constant to be fit, and
+$GHI$ is actual or forecast global horizontal irradiance.
+%
+\begin{equation}
+	\label{eqn:ghi-regression-model}
+	P_{PV} = k_1 \cdot GHI
+\end{equation}
 
-On the other hand, weather data that represented the attenuation of incoming solar energy was regressed against the clear-sky ratio for PV output.
+On the other hand, weather data, such as cloudiness, that represented the attenuation of incoming solar energy was regressed against the clear-sky ratio for PV output.
 Two methods were developed for calculating the clear-sky ratio.
 The first method was to roughly model the PV array using data for its geographic position and orientation to obtain modeled clear-sky output.
 The second method was to estimate the maximum possible output at each time of day by calculating the maximum observed PV output for each time of day in the historical data window.
@@ -45,22 +54,33 @@ In order to provide numerical stability of the clear-sky ratio for periods when 
 \end{equation}
 
 The regression model was then fit to the transformed data.
-A second-degree polynomial model was used in the case of ghi weather forecasts as well as the case of cloudiness weather forecasts.
+A second-degree polynomial model of the form shown in \cref{eqn:cloudiness-regression-model} was used to model the relationship between cloudiness and the clear-sky ratio, where
+$r_{cs}$ is the actual or forecast clear-sky ratio,
+$k_2$, $k_1$, and $k_0$ are coefficients to be fit, and
+$\zeta$ is actual or forecast cloudiness in a range from 0 (no clouds) to 100 (completely cloudy).
+%
+\begin{equation}
+	\label{eqn:cloudiness-regression-model}
+	r_{cs} = k_2 \zeta^2 + k_1 \zeta + k_0
+\end{equation}
+
 The fit model was then applied to the weather forecast data available for the forecast period.
-If applicable, the resulting forecast was then converted from a forecast clear-sky ratio back to PV output.
+If applicable, the resulting forecast was then converted from a forecast clear-sky ratio back to PV output using \cref{eqn:clear-sky-ratio}.
 
 \subsection{Intra-day Updates}
 \label{sec:method-intraday}
 
-Based on the assumption that updated weather forecasts are in general not obtained throughout the day, the current-day PV output forecast was updated using time-series techniques. Several approaches to intra-day updates were investigated as described in the following paragraphs.
+Based on the assumption that updated weather forecasts are in general not obtained throughout the day, the current-day PV output forecast was updated using time-series techniques.
+The AR and SARIMAX time-series models are described in time-series modeling/forecasting references\cite{box2015time,korstanje2021}.
+Several approaches to intra-day updates were investigated as described in the following paragraphs.
 
 \textit{AR(2) on actual output with exogenous variable:}
 An auto-regressive time series model with two lags was applied to the actual clear-sky output ratio with the day-ahead clear-sky output forecast included in the model as an exogenous variable.
 
 \textit{SARIMAX:}
 A seasonal auto-regressive integrated moving average model was applied to the actual PV power output with day-ahead output power forecast included in the model as an exogenous variable.
-This model is characterized by parameters for the number of lags, order of differencing, and order of the moving average, for both the trend and seasonal components.
-A variety of parameter combinations was tested against the data, and the best performing model was with AR(1) and MA(2), with the day-ahead PV output power forecast as an exogenous variable, and with no differencing or seasonal components included.
+This model is characterized by parameters for the number of auto-regressive (AR) lags $p$, order of differencing (I) $d$, and order of the moving average (MA) $q$, for both the trend and seasonal components.
+A variety of parameter combinations was tested against the data, and the best performing model was with AR $p=1$ and MA $q=2$, with the day-ahead PV output power forecast as an exogenous variable, and with no differencing or seasonal components included.
 
 \textit{AR(2) on residual of PV output:}
 An auto-regressive time series model with two lags was applied to the residual between actual PV output and the day-ahead forecast PV output. The forecast output of the model was then added as a correction term to the day-ahead PV output forecast for the intra-day period.
