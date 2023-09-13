@@ -124,13 +124,13 @@ def intraday_update_demo(location):
                 ax_output.set_xlabel(None)
                 ax_output.set_ylabel('PV Output (pu)')
                 ax_output.set_ylim(top=0.9)
-                ax_output.xaxis.grid(True, which='minor')
+                ax_output.grid(True, which='both', axis='both')
                 ax_output.legend()
 
                 dayahead_fx['actual_csratio'].plot(ax=ax_csratio, label='Actual output')
                 ax_csratio.set_xlabel(None)
                 ax_csratio.set_ylabel('Clearsky Ratio (pu)')
-                ax_csratio.xaxis.grid(True, which='minor')
+                ax_csratio.grid(True, which='both', axis='both')
                 ax_csratio.legend()
 
                 pdf.savefig()
@@ -175,7 +175,7 @@ def intraday_comparison(location):
     metrics_list = [root_mean_square_error, mean_absolute_error, mean_bias_error]
     results_metrics = pd.DataFrame(index=pd.MultiIndex.from_product([fx_offsets, intraday_methods],
                                                                     names=['Offset', 'Method']),
-                                   columns=['MSE', 'MAE', 'MBE'], dtype=float)
+                                   columns=['RMSE', 'MAE', 'MBE'], dtype=float)
     results_metrics_daily_total = results_metrics.copy()
 
     dayahead_method = 'load_from_file'

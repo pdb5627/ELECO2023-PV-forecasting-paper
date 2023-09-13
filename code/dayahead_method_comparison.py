@@ -14,7 +14,7 @@ import logging.config
 import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
-from sklearn.metrics import mean_squared_error, mean_absolute_error
+from sklearn.metrics import mean_absolute_error
 import statsmodels
 import statsmodels.api as sm
 from ems.datasets import ClearskyModel

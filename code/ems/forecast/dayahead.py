@@ -9,7 +9,7 @@ import numpy as np
 from sklearn.preprocessing import PolynomialFeatures  # StandardScaler
 from sklearn.linear_model import LinearRegression
 from sklearn.pipeline import Pipeline
-from sklearn.metrics import r2_score, mean_squared_error
+from sklearn.metrics import r2_score
 import pandas as pd
 from typing import Optional
 from functools import partial
@@ -17,7 +17,7 @@ import itertools
 
 # from .bayes_model import LinearModel, TransformedTargetPYMCRegressor
 from .utils import load_hist, load_forecast, calc_csratio, inv_csratio, save_dayahead_fx, \
-    aggregate_by_time, apply_time_mapping, label_by_weather
+    aggregate_by_time, apply_time_mapping, label_by_weather, root_mean_square_error
 
 
 def irr_forecast(location, fc_start, lookback='2w', lookahead='24h'):
@@ -277,7 +277,7 @@ def dayahead_fx_plot(fig: Optional[matplotlib.figure.Figure] = None, plot_ahead=
     actuals['P_out_resid'] = forecast_df['actual'] - forecast_df['forecast']
 
     # Compare to actuals
-    forecast_MSE = mean_squared_error(forecast_df['actual'], forecast_df['forecast'])
+    forecast_RMSE = root_mean_square_error(forecast_df['actual'], forecast_df['forecast'])
 
     # Use passed in figure object if there is one, otherwise create a new A4 page
     if fig is None:
@@ -292,10 +292,10 @@ def dayahead_fx_plot(fig: Optional[matplotlib.figure.Figure] = None, plot_ahead=
     ax.clear()
     ax.set_title('PV output')
     forecast_df[['forecast', 'actual']].plot(ax=ax)
-    ax.xaxis.grid(True, which='minor')
+    ax.grid(True, which='both', axis='both')
     ax.set_ylim(top=0.9)
     ax.set_xlabel(None)
-    ax.text(0.02, 0.98, f'Forecast MSE: {forecast_MSE:.3g}',
+    ax.text(0.02, 0.98, f'Forecast RMSE: {forecast_RMSE:.3g}',
             ha='left', va='top', transform=ax.transAxes)
 
     ax = fig.axes[2]
@@ -306,16 +306,16 @@ def dayahead_fx_plot(fig: Optional[matplotlib.figure.Figure] = None, plot_ahead=
         fx_weather[[pred_cols[0], 'actual_' + pred_cols[0]]].plot(ax=ax)
         # fx_weather2['ghi'].plot(ax=ax, label='updated_ghi_fx')
 
-        irr_fx_MSE = mean_squared_error(fx_weather['actual_' + pred_cols[0]], fx_weather[pred_cols[0]])
-        # irr_fx2_MSE = mean_squared_error(fx_weather['actual_ghi'], fx_weather2['ghi'])
-        ax.xaxis.grid(True, which='minor')
+        irr_fx_RMSE = root_mean_square_error(fx_weather['actual_' + pred_cols[0]], fx_weather[pred_cols[0]])
+        # irr_fx2_RMSE = root_mean_square_error(fx_weather['actual_ghi'], fx_weather2['ghi'])
+        ax.grid(True, which='both', axis='both')
         ylim_lu = {'ghi': 1000, 'clouds': 100, 'meteogram_clouds': 100}
         try:
             ax.set_ylim(top=ylim_lu[pred_cols[0]])
         except ValueError:
             pass
         ax.set_xlabel(None)
-        ax.text(0.02, 0.98, f'Forecast MSE: {irr_fx_MSE:.3g}', ha='left', va='top', transform=ax.transAxes)
+        ax.text(0.02, 0.98, f'Forecast RMSE: {irr_fx_RMSE:.3g}', ha='left', va='top', transform=ax.transAxes)
         ax.legend()
     # plt.show()
 
@@ -337,6 +337,7 @@ def dayahead_fx_plot(fig: Optional[matplotlib.figure.Figure] = None, plot_ahead=
         except ValueError:
             pass
         ax.set_ylim(top=0.9)
+        ax.grid(True, which='both', axis='both')
         ax.set_xlabel(pred_cols[0])
         if kind == 'fx_output':
             ax.set_ylabel('PV Output')
@@ -352,7 +353,7 @@ def dayahead_fx_plot(fig: Optional[matplotlib.figure.Figure] = None, plot_ahead=
     forecast_df['actual_csratio'].plot(ax=ax, label='actual')
     ax.set_ylim(0, 1.2)
     ax.set_xlabel(None)
-    ax.xaxis.grid(True, which='minor')
+    ax.grid(True, which='both', axis='both')
     ax.legend()
     ax.set_title('Clearsky Ratio')
 
