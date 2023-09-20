@@ -3,7 +3,7 @@ import pandas as pd
 from ems.modeling.modeling_window import ModelingWindow
 from .dayahead import cs_ratio_forecast, irr_forecast, persistence_fx, generic_fx
 from .intraday import intraday_update
-from .utils import ForecastError, load_dayahead_fx
+from .utils import load_dayahead_fx
 
 
 logger = logging.getLogger(__name__)
