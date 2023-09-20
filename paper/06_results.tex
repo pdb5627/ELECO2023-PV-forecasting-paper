@@ -44,6 +44,7 @@ The persistence forecast was that the PV output for the upcoming period will be 
 
 Following \cite{Pedro2012} and \cite{Gigoni2018}, the methods were evaluated using root mean square error (RMSE), mean absolute error (MAE), and mean bias error (MBE) as the error measure.
 These metrics were calculated for of the whole time series as well as the for the forecast total energy output for each day.
+The resulting error metrics are shown in \cref{table:dayahead-metrics} and \cref{table:dayahead-metrics-sum} respectively.
 
 % Data for this table is from the file
 % /results/dayahead_method_comparison/error_comparison_table.tex
@@ -103,7 +104,7 @@ The persistence forecast was that the clear-sky ratio for the remainder of the d
 
 For comparison, the RMSE, MAE, and MBE for the different intra-day forecast update methods were computed
 for the forecast for the periods 0 to 1, 1 to 2, and 6 to 7 hours after of the time at which the forecast is generated.
-The result error metrics are shown in \cref{table:intraday-metrics}.
+The resulting error metrics are shown in \cref{table:intraday-metrics}.
 
 % Table data from
 % /results/intraday_method_comparison/error_comparison_table.tex
@@ -113,8 +114,8 @@ The result error metrics are shown in \cref{table:intraday-metrics}.
 	\caption{Intraday forecast metrics}
 	\label{table:intraday-metrics}
 	\sisetup{round-mode=places,
-		round-precision=3}
-	\begin{tabular}{clS[table-format=1.3]S[table-format=1.3] >{\sisetup{round-precision=4}}S[table-format=-1.4]}
+		round-precision=4}
+	\begin{tabular}{clS[table-format=1.4]S[table-format=1.4] >{\sisetup{round-precision=4}}S[table-format=-1.4]}
 		\toprule
 		\shortstack{Hours\\Ahead} & {Method} & {RMSE} & {MAE} & {MBE} \\
 		\midrule
