@@ -1,1 +1,137 @@
-../../eleco_latex/eleco.sty
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%  eleco.sty
+%
+%
+% Created for ELECO 2023
+% by Paul Brown (https://www.github.com/pdb5672/)
+%
+% Adapted from version for ELECO 2013
+% 
+% 2013 version credits to:
+% Alper Erdogan
+% Stephen Martucci  -- martucci@cdg.nj.nec.com
+% Jyri Huopaniemi -- jyri.huopaniemi@nokia.com
+% Matti Karjalainen -- matti.karjalainen@hut.fi
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage{times}
+\usepackage[italic]{mathastext}
+
+\usepackage{amsmath}
+\g@addto@macro\normalsize{%
+	\setlength\abovedisplayskip{10pt}
+	\setlength\belowdisplayskip{10pt}
+	\setlength\abovedisplayshortskip{10pt}
+	\setlength\belowdisplayshortskip{10pt}
+}
+
+\usepackage[labelfont=bf,skip=6pt,justification=centering,labelsep=period]{caption}
+\captionsetup[figure]{name=Fig.}
+\setlength{\textfloatsep}{10pt}
+\setlength{\floatsep}{10pt}
+\setlength{\intextsep}{5pt}
+
+\usepackage[a4paper,
+left=2cm,
+right=2cm,
+top=2.5cm,
+bottom=3.8cm,% Add 0.1cm to bottom margin for descenders.
+footskip=1cm,
+twocolumn,
+columnsep=5mm]{geometry}
+
+\usepackage{indentfirst}
+\setlength\parindent{4mm}
+
+% Spaces in lists
+\usepackage{enumitem}
+\setlist{nosep}
+
+\usepackage[center]{titlesec}
+\titleformat{\section}[block]%
+{\centering\bfseries\fontsize{10pt}{11pt}\selectfont}%
+{\thesection. }{0pt}{}
+\titleformat{\subsection}[block]%
+{\bfseries\fontsize{10pt}{11pt}\selectfont}%
+{\thesubsection. }{0pt}{}
+\titleformat{\subsubsection}[block]%
+{\bfseries\fontsize{10pt}{11pt}\selectfont}%
+{\thesubsubsection. }{0pt}{}
+\titlespacing{\section}{0pt}{9pt}{9pt}[0pt]
+\titlespacing{\subsection}{0pt}{9pt}{9pt}[0pt]
+\titlespacing{\subsubsection}{0pt}{9pt}{9pt}[0pt]
+
+
+\def\maketitle{\par
+	\begingroup
+	\def\thefootnote{}
+	\def\@makefnmark{\hbox
+		to 0pt{$^{\@thefnmark}$\hss}}
+	\if@twocolumn
+	\twocolumn[\@maketitle]
+	\else \newpage
+	\global\@topnum\z@ \@maketitle \fi\@thanks
+	\endgroup
+	\setcounter{footnote}{0}
+	\let\maketitle\relax
+	\let\@maketitle\relax
+	\gdef\thefootnote{\arabic{footnote}}\gdef\@@savethanks{}%
+	\gdef\@thanks{}\gdef\@author{}\gdef\@title{}\let\thanks\relax}
+
+\def\@maketitle{\newpage
+	\null
+	\vskip 5mm \begin{center}
+		{{\@title}}
+		\vskip 12pt
+		{\fontsize{11pt}{12pt}\selectfont \@name }
+		\vskip 12pt
+		{\fontsize{10pt}{11pt}\selectfont \@address }
+	\end{center}
+	\vskip 12pt}
+
+\def\title#1{\gdef\@title{\fontsize{14pt}{15.4pt}\selectfont\bf{#1}}}
+\def\name#1{\gdef\@name{{#1}\\}}
+\def\address#1{\gdef\@address{#1}}
+\gdef\@title{{Title of paper}}
+\gdef\@name{{Name of author}\\}
+\gdef\@address{Address - Line 1 \\
+	Address - Line 2 \\
+	Address - Line 3}
+
+\def\abstract{\begin{center}
+		{\bf \fontsize{10pt}{11pt}\selectfont Abstract}%
+	\end{center}\bf}
+\def\endabstract{\par}
+
+% Defined without section heading. Include this separately.
+\def\thebibliography#1{\list
+	{[\arabic{enumi}]}{\settowidth\labelwidth{[#1]}\leftmargin\labelwidth
+		\advance\leftmargin\labelsep
+		\usecounter{enumi}\setlength{\itemsep}{0pt}
+		\setlength{\parskip}{0pt}
+		\setlength{\parsep}{0pt}
+		\setlength{\topsep}{0pt}
+		\setlength{\partopsep}{0pt}}
+	%\def\newblock{\hskip .11em plus .33em minus .07em}
+	\sloppy\clubpenalty4000\widowpenalty4000
+	\sfcode`\.=1000\relax
+}
+\let\endthebibliography=\endlist
+
+
+\usepackage{cite}
+\bibliographystyle{IEEEtran}
+
+% A macro from ieeetrans class for triggering configuration of bibliography by means of a magical citation.
+\def\bstctlcite{\@ifnextchar[{\@bstctlcite}{\@bstctlcite[@auxout]}}
+\def\@bstctlcite[#1]#2{\@bsphack
+	\@for\@citeb:=#2\do{%
+		\edef\@citeb{\expandafter\@firstofone\@citeb}%
+		\if@filesw\immediate\write\csname #1\endcsname{\string\citation{\@citeb}}\fi}%
+	\@esphack}
+
+\raggedbottom
+
+% Clear footers
+\pagestyle{empty}
