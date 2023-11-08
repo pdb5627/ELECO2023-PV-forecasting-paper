@@ -18,6 +18,12 @@ A high-level diagram of the proposed forecast method is shown in \cref{fig:PV_fo
 \label{sec:method-day-ahead}
 
 The proposed day-ahead forecasting method combines historical PV output data with historical weather data to infer the relationship between weather and PV output by fitting a simple regression model.
+The weather data used is either an estimate of solar irradiance or cloudiness.
+\pdfmarkupcomment[color=yellow]{Other weather factors such as temperature are known to influence PV output values,
+as well as non-weather factors such as PV aging, dust, and shading.
+Because the proposed method uses relatively recent historical PV output data, the longer-term changes related to aging, seasonal temperatures, and dustiness are implicitly tracked as the historical data window moves forward in time.
+On the other hand, changes in these factors that are relatively fast compared to the historical time window used will not be accounted for.
+Shading may be incorporated to some extent if hourly maximum values from recent history are used to calculate the clear-sky output in cloudiness-based forecasts, however, the available PV dataset did not include any shading of the array, so the effectiveness of this method is addressing shading is not demonstrated.}{Added discussion of other factors affecting PV output as suggested by Reviewer \#1.}
 
 Some pre-processing of the historical data was done prior to  fitting the regression model.
 Data from periods of darkness, when output goes to small or negative values, were removed.
@@ -85,8 +91,11 @@ A variety of parameter combinations was tested against the data, and the best pe
 \textit{AR(2) on residual of PV output:}
 An auto-regressive time series model with two lags was applied to the residual between actual PV output and the day-ahead forecast PV output. The forecast output of the model was then added as a correction term to the day-ahead PV output forecast for the intra-day period.
 
-\textit{AR(2) on residual of clear-sky ratio:}
-An auto-regressive time series model with two lags was applied to the residual between the actual clear-sky ratio and the day-ahead forecast clear-sky ratio. The forecast output of the model was then added as a correction term to the day-ahead clear-sky ratio forecast for the intra-day period.
+
+\begin{removal}
+\pdfmarkupcomment[color=red]{\textit{AR(2) on residual of clear-sky ratio:}
+An auto-regressive time series model with two lags was applied to the residual between the actual clear-sky ratio and the day-ahead forecast clear-sky ratio. The forecast output of the model was then added as a correction term to the day-ahead clear-sky ratio forecast for the intra-day period.}{Remove this method from the report to save space. I don't think it adds much.}
+\end{removal}
 
 \textit{Scaling:}
 The day-ahead forecast for the rest of the day was scaled using the ratio between the actual output in the previous period and the day-ahead forecast for the previous period.

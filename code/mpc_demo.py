@@ -497,8 +497,8 @@ def optimize_and_simulate_from_actuals(seed=42, dayahead_method='solcast_clouds'
                 fx_model.optimal_operation = fx_model.initialized_operation
 
             # Save model to a file.
-            with open(path / f'{start_time:%Y%m%d_%H%M}_fx_model.pkl', 'wb') as f:
-                pickle.dump(fx_model, f)
+            # with open(path / f'{start_time:%Y%m%d_%H%M}_fx_model.pkl', 'wb') as f:
+            #     pickle.dump(fx_model, f)
 
         decision_variables = fx_model.optimal_operation[fx_model.decision_variables]
         optimization_models[optimization_window] = fx_model
@@ -526,8 +526,8 @@ def optimize_and_simulate_from_actuals(seed=42, dayahead_method='solcast_clouds'
             simulation_model = build_model(simulation_window, actuals_for_simulation, state_data, initialize_model=False)
             simulation_model.simulate_operation(decision_variables, stride//one_hr)
 
-            with open(path / f'{start_time:%Y%m%d_%H%M}_sim_model.pkl', 'wb') as f:
-                pickle.dump(simulation_model, f)
+            # with open(path / f'{start_time:%Y%m%d_%H%M}_sim_model.pkl', 'wb') as f:
+            #     pickle.dump(simulation_model, f)
 
             if period_plots:
             # Generate and save plots
@@ -595,12 +595,12 @@ def optimize_and_simulate_from_actuals(seed=42, dayahead_method='solcast_clouds'
     #     pickle.dump(optimization_results, f)
     # with open(path / 'all_simulation_results.pkl', 'wb') as f:
     #     pickle.dump(simulation_results, f)
-    with open(path / 'all_simulation_models.pkl', 'wb') as f:
-        pickle.dump(simulation_models, f)
-    with open(path / 'all_optimization_models.pkl', 'wb') as f:
-        pickle.dump(optimization_models, f)
-    logger.info(f'All optimization and simulation models for {seed=}, {dayahead_method=}, and {intraday_method=} saved.')
-    logger.info(f'{path=}')
+    # with open(path / 'all_simulation_models.pkl', 'wb') as f:
+    #     pickle.dump(simulation_models, f)
+    # with open(path / 'all_optimization_models.pkl', 'wb') as f:
+    #     pickle.dump(optimization_models, f)
+    # logger.info(f'All optimization and simulation models for {seed=}, {dayahead_method=}, and {intraday_method=} saved.')
+    # logger.info(f'{path=}')
 
     return optimization_models, simulation_models
 
@@ -703,29 +703,6 @@ def concatenate_simulation_windows(simulation_models: Mapping[ModelingWindow, Tw
     return m
 
 
-def load_models_from_file(data_path):
-    logger.info(f'Loading collection of all precomputed models from {data_path}')
-    # with open(data_path / 'all_optimization_models.pkl', 'rb') as f:
-    #     optimization_models = pickle.load(f)
-    optimization_models = None
-    with open(data_path / 'all_simulation_models.pkl', 'rb') as f:
-        simulation_models = pickle.load(f)
-    return optimization_models, simulation_models
-
-
-def load_all_models(data_path):
-    model_dicts = []
-    logger.info(f'Loading precomputed models from {data_path}')
-    for pattern in ['*fx_model.pkl', '*sim_model.pkl']:
-        model_dict = dict()
-        for fname in data_path.glob(pattern):
-            with open(fname, 'rb') as f:
-                m = pickle.load(f)
-            model_dict[m.params.modeling_window] = m
-        model_dicts.append(model_dict)
-    return tuple(model_dicts)
-
-
 @dataclasses.dataclass
 class ColumnPlotInfo:
     legend_txt: str
@@ -785,27 +762,18 @@ def plot_comparison(results_dict, col, include_title=True, params_dict: Mapping[
 
 
 if __name__ == '__main__':
-    run_optimization = True
     seed = 42
     for dayahead_method, intraday_method in [('persistence', 'persistence'),
                                              ('solcast_clouds', 'sarimax'),
+                                             ('solcast_clouds', None),
                                              ('oracle', None),
                                              ]:
-        if run_optimization:
-            prev_run = None
-            if prev_run:
-                data_path = Path('results/mpc_demo/') / f'{seed=},{dayahead_method=},{intraday_method=}'
-                precomputed_optimization_models, precomputed_simulation_models = load_all_models(data_path)
-            else:
-                precomputed_optimization_models, precomputed_simulation_models = None, None
-            optimization_models, simulation_models = optimize_and_simulate_from_actuals(seed,
-                                                                                        dayahead_method,
-                                                                                        intraday_method,
-                                                                                        precomputed_optimization_models,
-                                                                                        precomputed_simulation_models)
-        else:
 
-            data_path = Path('../results/mpc_demo/') / f'{seed=},{dayahead_method=},{intraday_method=}'
-            optimization_models, simulation_models = load_models_from_file(data_path)
+        precomputed_optimization_models, precomputed_simulation_models = None, None
+        optimization_models, simulation_models = optimize_and_simulate_from_actuals(seed,
+                                                                                    dayahead_method,
+                                                                                    intraday_method,
+                                                                                    precomputed_optimization_models,
+                                                                                    precomputed_simulation_models)
 
         summarize_and_plot(optimization_models, simulation_models)

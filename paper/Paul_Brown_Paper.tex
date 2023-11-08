@@ -80,6 +80,8 @@
 
 % Required for package pdfcomment later
 \usepackage{xcolor}
+% Use for highlighting in draft
+\usepackage{comment}
 
 % For listings
 %\usepackage{listings}
@@ -91,7 +93,9 @@
 %  captionpos=b}%
 
 % Enable nice comments
-\usepackage[final]{pdfcomment}
+\usepackage[author=Paul Brown,color=yellow,final]{pdfcomment}
+%\includecomment{removal}  % To show parts marked for removal
+\excludecomment{removal} % For final version, to remove parts marked for removal
 %
 % color={0.045 0.278 0.643}  % Blue
 % color={0.234 0.867 0.211 % Light green
@@ -189,7 +193,7 @@
 
 
 % correct bad hyphenation here
-\hyphenation{op-tical net-works semi-conduc-tor}
+\hyphenation{op-tical net-works semi-conduc-tor light-weight}
 
 \graphicspath{{./figs/}}
 

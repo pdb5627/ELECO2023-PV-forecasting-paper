@@ -4,7 +4,7 @@
 In order to test and compare the methods presented in \cref{sec:proposed-method},
 the methods were applied to real PV time series data, described in detail in \cref{sec:data-source}.
 The results shown in this section are for the PV time series covering
-103 days from 21 March to 29 June, 2021.
+\pdfmarkupcomment[color=yellow]{926 days from 31 March, 2021 to 30 September, 2023.}{Using a longer data window to be able to show accuracy of the methods over different seasons.}
 
 \subsection{Day-ahead forecasts}
 
@@ -13,8 +13,11 @@ Using data available prior to sunrise, the proposed day-ahead forecast method fr
 to forecast the upcoming one-day (24 hr) PV output.
 Following findings from \cite{Almeida2015},
 28 days of historical data was used to fit the regression models.
-An example day-ahead forecast using the Solcast GHI forecast is shown in \cref{fig:dayahead-forecast-solcast}
-and an example day-ahead forecast using the MGM meteogram cloudiness forecast is shown in \cref{fig:dayahead-forecast-meteogram}.
+An example day-ahead forecast using the Solcast GHI forecast is shown in \cref{fig:dayahead-forecast-solcast}. %
+\begin{removal}
+\pdfmarkupcomment[color=red]{and an example day-ahead forecast using the MGM meteogram cloudiness forecast is shown in Fig. 3}{Remove this plot to make space for new RMSE by Month plot}
+\end{removal}
+
 
 % /results/dayahead_method_comparison/SolCastGHIForecasts.pdf  page 27, with margins cropped
 \begin{figure}[!ht]
@@ -30,14 +33,17 @@ and an example day-ahead forecast using the MGM meteogram cloudiness forecast is
 
 % This figure is from the file
 % /results/dayahead_method_comparison/MeteogramForecasts_csratio_max.pdf  page 27, with margins cropped
+\begin{removal}
 \begin{figure}[tbh]
 	\centering
+	\colorbox{red}{
 	% trim=left botm right top
-	\includegraphics[width=1.0\columnwidth]{MeteogramForecasts_csratio_max-p27-cropped.pdf}
+	\includegraphics[width=1.0\columnwidth]{MeteogramForecasts_csratio_max-p27-cropped.pdf}}
 	%\includegraphics[width=6.5in]{MeteogramForecasts_cs_ratio_p41.png}
 	\caption{Example Day-ahead Forecast using MGM Meteogram Weather Forecast}
 	\label{fig:dayahead-forecast-meteogram}
 \end{figure}
+\end{removal}
 
 In addition to the proposed method, a reference day-ahead persistence forecast was also generated.
 The persistence forecast was that the PV output for the upcoming period will be the same as the PV output for the same time of day in the previous day.
@@ -50,7 +56,7 @@ The resulting error metrics are shown in \cref{table:dayahead-metrics} and \cref
 % /results/dayahead_method_comparison/error_comparison_table.tex
 \begin{table}[!t]
 	\centering
-	\caption{Day-ahead forecast metrics}
+	\caption{Day-ahead forecast metrics\pdfcomment[color=yellow]{Updated numbers in Tables 1, 2, and 3 for expanded time range}}
 	\label{table:dayahead-metrics}
 	\sisetup{round-mode=places,
 		     round-precision=3}
@@ -58,16 +64,26 @@ The resulting error metrics are shown in \cref{table:dayahead-metrics} and \cref
 		\toprule
 		                       &   {RMSE}   &   {MAE}    &    {MBE}    \\
         \midrule
-		Persistence & 0.125386 & 0.062034 & 0.000559 \\
-		%Persistence 3 Days Avg & 0.110245 & 0.056241 & 0.000765 \\
-		%Persistence 28 Days Avg & 0.102519 & 0.056196 & 0.012774 \\
-		SolCast Cloudiness & 0.077777 & 0.039775 & -0.008772 \\
-		SolCast GHI & 0.080251 & 0.039048 & -0.011762 \\
-		%MGM Meteogram1 & 0.086312 & 0.045221 & -0.007386 \\
-		MGM Meteogram & 0.085693 & 0.046865 & 0.002728 \\
+		Persistence & 0.108008 & 0.045457 & -0.000056 \\
+		SolCast Cloudiness & 0.079121 & 0.036570 & -0.005733 \\
+		SolCast GHI & 0.080192 & 0.036055 & -0.005092 \\
+		MGM Meteogram & 0.088710 & 0.043129 & -0.007566 \\
 		\bottomrule
 	\end{tabular}
 \end{table}
+
+\Cref{fig:error-comparison-rmse-by-month} \pdfmarkupcomment[color=yellow]{shows the RMSE of the day-ahead forecasts when broken down by month of the year. The generally predictable climate pattern of clear summer skies is evident in the higher accuracy of all forecasting methods in the summer months of July and August.}{Added  figure and discussion in response to reviewers who wanted to know how the methods perform in different seasons.}
+
+% This figure is from the file
+% /results/dayahead_method_comparison/error_comparison_rmse_by_month.pdf  No post-processing used
+\begin{figure}[tbh]
+	\centering
+	% trim=left botm right top
+	\includegraphics[width=1.0\columnwidth]{error_comparison_rmse_by_month.pdf}
+	%\includegraphics[width=6.5in]{MeteogramForecasts_cs_ratio_p41.png}
+	\caption{Day-ahead Forecast RMSE by Month}
+	\label{fig:error-comparison-rmse-by-month}
+\end{figure}
 
 % Data for this table is from the file
 % /results/dayahead_method_comparison/error_comparison_table_daily_total.tex
@@ -81,13 +97,10 @@ The resulting error metrics are shown in \cref{table:dayahead-metrics} and \cref
 		\toprule
 		                       &   {RMSE}   &   {MAE}    &    {MBE}    \\
         \midrule
-		Persistence & 1.501558 & 1.154667 & 0.013278 \\
-		%Persistence 3 Days Avg & 1.359984 & 1.069204 & 0.018169 \\
-		%Persistence 28 Days Avg & 1.285958 & 1.049198 & 0.303316 \\
-		SolCast Cloudiness & 0.758310 & 0.583713 & -0.208281 \\
-		SolCast GHI & 0.754631 & 0.564057 & -0.279288 \\
-		%MGM Meteogram1 & 0.870085 & 0.676501 & -0.171603 \\
-		MGM Meteogram & 0.890298 & 0.699723 & 0.063379 \\
+		Persistence & 1.261943 & 0.873835 & -0.001353 \\
+		SolCast Cloudiness & 0.917348 & 0.570336 & -0.137452 \\
+		SolCast GHI & 0.911198 & 0.576658 & -0.122080 \\
+		MGM Meteogram & 0.934198 & 0.557860 & -0.136774 \\
 		\bottomrule
 	\end{tabular}
 \end{table}
@@ -105,6 +118,7 @@ The persistence forecast was that the clear-sky ratio for the remainder of the d
 For comparison, the RMSE, MAE, and MBE for the different intra-day forecast update methods were computed
 for the forecast for the periods 0 to 1, 1 to 2, and 6 to 7 hours after of the time at which the forecast is generated.
 The resulting error metrics are shown in \cref{table:intraday-metrics}.
+Note that the intra-day forecast metrics exclude nighttime hours since intra-day updates are not applied to them.
 
 % Table data from
 % /results/intraday_method_comparison/error_comparison_table.tex
@@ -119,33 +133,36 @@ The resulting error metrics are shown in \cref{table:intraday-metrics}.
 		\toprule
 		\shortstack{Hours\\Ahead} & {Method} & {RMSE} & {MAE} & {MBE} \\
 		\midrule
-		\multirow[c]{6}{*}{0 - 1} & Persistence & 0.066402 & 0.032348 & -0.001927 \\
-		& fx\_output\tnote{1} & 0.061250 & 0.031521 & -0.004008 \\
-		& fx\_csratio\tnote{2} & 0.061287 & 0.032877 & 0.005391 \\
-		& exog\tnote{3} & 0.062121 & 0.035210 & 0.007142 \\
-		& SARIMAX & 0.061276 & 0.032177 & -0.002071 \\
-		& Scaling & 0.066521 & 0.032765 & 0.000312 \\
+		\multirow[c]{6}{*}{0 - 1} & No update & 0.126005 & 0.094915 & -0.006438 \\
+		& Persistence & 0.087132 & 0.057455 & -0.003383 \\
+		& fx\_output\tnote{1} & 0.087592 & 0.062191 & -0.003949 \\
+		% & fx\_csratio\tnote{2} & 0.086909 & 0.060625 & 0.000521 \\
+		& exog\tnote{2} & 0.090861 & 0.068151 & 0.021551 \\
+		& sarimax & 0.090069 & 0.064636 & 0.002129 \\
+		& scaling & 0.091690 & 0.061761 & -0.000821 \\
 		\midrule
-		\multirow[c]{6}{*}{1 - 2} & Persistence & 0.087537 & 0.041895 & -0.002370 \\
-		& fx\_output\tnote{1} & 0.072388 & 0.037227 & -0.006002 \\
-		& fx\_csratio\tnote{2} & 0.074352 & 0.040628 & 0.009484 \\
-		& exog\tnote{3} & 0.076981 & 0.044319 & 0.012378 \\
-		& SARIMAX & 0.072276 & 0.037944 & -0.002893 \\
-		& Scaling & 0.087582 & 0.042662 & 0.001654 \\
+		\multirow[c]{6}{*}{1 - 2} & No update & 0.123005 & 0.090430 & -0.004166 \\
+		& Persistence & 0.110134 & 0.072331 & -0.006418 \\
+		& fx\_output\tnote{1} & 0.105942 & 0.076733 & -0.003053 \\
+		% & fx\_csratio\tnote{2} & 0.104632 & 0.074071 & 0.001245 \\
+		& exog\tnote{2} & 0.113910 & 0.088160 & 0.038186 \\
+		& sarimax & 0.109042 & 0.080150 & 0.007030 \\
+		& scaling & 0.112747 & 0.076054 & -0.002213 \\
 		\midrule
-		\multirow[c]{6}{*}{6 - 7} & persistence & 0.097451 & 0.047634 & -0.007458 \\
-		& fx\_output\tnote{1} & 0.076197 & 0.039071 & -0.008300 \\
-		& fx\_csratio\tnote{2} & 0.078040 & 0.041770 & 0.002292 \\
-		& exog\tnote{3} & 0.080952 & 0.044051 & 0.002318 \\
-		& SARIMAX & 0.076163 & 0.039420 & -0.006929 \\
-		& Scaling & 0.096509 & 0.046960 & -0.000324 \\
+		\multirow[c]{6}{*}{6 - 7} & No update & 0.067470 & 0.033187 & -0.006961 \\
+		& Persistence & 0.080227 & 0.037925 & -0.012122 \\
+		& fx\_output\tnote{1} & 0.068531 & 0.034695 & -0.007467 \\
+		% & fx\_csratio\tnote{2} & 0.065369 & 0.031866 & -0.006138 \\
+		& exog\tnote{2} & 0.075610 & 0.038661 & 0.016232 \\
+		& sarimax & 0.069811 & 0.035670 & -0.002428 \\
+		& scaling & 0.078117 & 0.036695 & -0.007487 \\
 		\bottomrule
 	\end{tabular}
 	\begin{tablenotes}
 		\footnotesize
 		\item[1] AR(2) on residual of PV output.
-		\item[2] AR(2) on residual of clear-sky ratio
-		\item[3] AR(2) on actual output with exogenous variable
+		% \item[2] AR(2) on residual of clear-sky ratio
+		\item[2] AR(2) on actual output with exogenous variable
 	\end{tablenotes}
 \end{threeparttable}
 \end{table}
@@ -161,6 +178,11 @@ The resulting error metrics are shown in \cref{table:intraday-metrics}.
 	\label{fig:intraday-forecast}
 \end{figure}
 
+% Discussion of benefits of intra-day updates
+\pdfmarkupcomment[color=yellow]{
+Comparison of the error metrics for the various intra-day update methods to the error metrics for the original dayahead forecasts shows that
+the intra-day updates are most beneficial to the forecast accuracy in the upcoming few hours.
+When considering six hours ahead, the weather-forecast-based day-ahead forecast tends to perform best without any proposed update methods.}{Added some discussion of the intra-day forecast results. I think the comparison to no update is helpful to see.}
 
 \subsection{Optimal Energy Dispatch}
 
@@ -197,7 +219,7 @@ The MPC optimization was performed using the forecast PV data, including intra-d
 The operation for the following period was then simulated using actual PV data.
 A flowchart of the MPC simulation is shown in \cref{fig:mpc-simulation-flowchart}.
 
-\begin{figure}[thb]
+\begin{figure}[tb]
 	\centering
 	\fontsize{6pt}{7pt}\selectfont
 	\def\svgwidth{0.8\columnwidth}
@@ -206,7 +228,7 @@ A flowchart of the MPC simulation is shown in \cref{fig:mpc-simulation-flowchart
 	\label{fig:demo-system}
 \end{figure}
 
-\begin{figure}[thb]
+\begin{figure}[tb]
 	\centering
 	% trim=left botm right top
 	\includegraphics[width=1.0\columnwidth]{MPC Demo System Diagram.pdf}
@@ -214,7 +236,8 @@ A flowchart of the MPC simulation is shown in \cref{fig:mpc-simulation-flowchart
 	\label{fig:mpc-simulation-flowchart}
 \end{figure}
 
-\Cref{table:mpc-simulation-results} shows results of the MPC simulation. Simulations were performed for three forecasts:
+\pdfmarkupcomment[color=yellow]{The results shown in this section are for simulated operation for
+64 days from 27 April to 29 June, 2021.}{Since this section's dates don't match the dayahead and intraday sections, they are now listed separately.} \Cref{table:mpc-simulation-results} shows results of the MPC simulation. Simulations were performed for three forecasts:
 
 \begin{itemize}
 \item Persistence forecast
@@ -244,13 +267,13 @@ An additional 8\% reduction in the objective function value would be possible wi
           & {\shortstack{Persistence\\Forecast}} & {\shortstack{Proposed\\Method}} & {\shortstack{Perfect\\Forecast}} \\
 		  & {(\$, 2020)} & {(\$, 2020)}                    & {(\$, 2020)} \\
 		\midrule
-		Grid energy            & 65350 & 63466 & 58052 \\
-		Battery use            &  8117 &  7964 &  8047 \\
-		Inadequate water       &   865 &     0 &    10 \\
-		Battery mode switching &   246 &   228 &   230 \\
-		Pump switching         &    94 &    90 &    80 \\
+		Grid energy            & 65350 & 63764 & 58052 \\
+		Battery use            &  8117 &  8178 &  8047 \\
+		Inadequate water       &   865 &    71 &    10 \\
+		Battery mode switching &   246 &   236 &   230 \\
+		Pump switching         &    94 &    98 &    80 \\
 		\midrule
-		TOTAL                       & 74672 & 71749 & 66418 \\
+		TOTAL                  & 74672 & 72347 & 66418 \\
 		\bottomrule
 	\end{tabular}
 \end{table}

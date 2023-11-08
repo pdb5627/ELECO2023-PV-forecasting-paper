@@ -47,8 +47,15 @@ def intraday_update(location, fc_start, lookback='2w', lookahead='24h', kind='fx
         lags = 2
         if len(hist_dayahead_fx) <= lags + 4:
             raise ForecastError('Insufficient previous dayahead forecast data for intraday update.')
-        model = statsmodels.tsa.ar_model.AutoReg(hist_dayahead_fx['actual_csratio'], lags=lags, exog=hist_dayahead_fx['fx_csratio'],
-                                                 old_names=False).fit()
+        hist_dayahead_fx = hist_dayahead_fx.asfreq('1h')
+
+        p, d, q, P, D, Q, exog = (lags, 0, 0, 0, 0, 0, hist_dayahead_fx['fx_csratio'])
+        model = sm.tsa.statespace.SARIMAX(hist_dayahead_fx['actual_csratio'], exog=exog,
+                                          order=(p, d, q),
+                                          seasonal_order=(P, D, Q, 24), enforce_invertibility=False).fit(disp=False)
+
+        # model = statsmodels.tsa.ar_model.AutoReg(hist_dayahead_fx['actual_csratio'], lags=lags, exog=hist_dayahead_fx['fx_csratio'],
+        #                                          old_names=False).fit()
         updated_fx['csratio'] = model.forecast(dayahead_fx.index[-1], exog=dayahead_fx['fx_csratio'])
         updated_fx['forecast'] = inv_csratio(updated_fx['csratio'], dayahead_fx['time_max'])
 
@@ -83,6 +90,7 @@ def intraday_update(location, fc_start, lookback='2w', lookahead='24h', kind='fx
         p, d, q, P, D, Q, exog = (1, 0, 2, 0, 0, 0, True) #model_list[0][0]
         if len(hist_dayahead_fx) <= p + 4:
             raise ForecastError('Insufficient previous dayahead forecast data for intraday update.')
+        hist_dayahead_fx = hist_dayahead_fx.asfreq('1h')
         model = sm.tsa.statespace.SARIMAX(hist_dayahead_fx['actual'], exog=hist_dayahead_fx['forecast'] if exog else None,
                                           order=(p, d, q),
                                           seasonal_order=(P, D, Q, 24), enforce_invertibility=False).fit(disp=False)
@@ -97,19 +105,24 @@ def intraday_update(location, fc_start, lookback='2w', lookahead='24h', kind='fx
     # Calculate residuals
     elif kind in {'fx_output', 'fx_csratio'}:
         if kind == 'fx_output':
-            resid = (hist_dayahead_fx['actual'] - hist_dayahead_fx['forecast']).dropna()
+            resid = (hist_dayahead_fx['actual'] - hist_dayahead_fx['forecast']) #.dropna()
         elif kind == 'fx_csratio':
-            resid = (hist_dayahead_fx['actual_csratio'] - hist_dayahead_fx['fx_csratio']).dropna()
+            resid = (hist_dayahead_fx['actual_csratio'] - hist_dayahead_fx['fx_csratio']) #.dropna()
 
 
         # Fit a model to past residuals
         lags = 2
         if len(resid) <= lags + 3:
             raise ForecastError('Insufficient previous dayahead forecast data for intraday update')
-        resid_model = statsmodels.tsa.ar_model.AutoReg(resid, lags=lags, old_names=False).fit()
+        resid = resid.asfreq('1h')
+        p, d, q, P, D, Q, exog = (lags, 0, 0, 0, 0, 0, False)
+        model = sm.tsa.statespace.SARIMAX(resid,
+                                          order=(p, d, q),
+                                          seasonal_order=(P, D, Q, 24), enforce_invertibility=False).fit(disp=False)
+        # resid_model = statsmodels.tsa.ar_model.AutoReg(resid, lags=lags, old_names=False, missing='drop').fit()
 
         # Apply model to current forecast
-        correction_AR = resid_model.forecast(fc_start+lookahead)
+        correction_AR = model.forecast(fc_start+lookahead)
 
         # Add correction to day-ahead forecast
         # TODO: Confirm if correction_AR should be ADDED or SUBTRACTED from the forecast???

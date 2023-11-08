@@ -143,29 +143,31 @@ def intraday_comparison(location):
     :param location:
     :return:
     """
-    dayahead_fx_file = Path('../results/dayahead_method_comparison/') / 'all_dayahead_fx_solcast_clouds.parquet'
+    dayahead_fx_file = Path('../results/dayahead_method_comparison/') / 'all_dayahead_fx_csratio_max.parquet'  #'all_dayahead_fx_solcast_clouds.parquet'
     all_dayahead_fx = pd.read_parquet(dayahead_fx_file)
     ems.forecast.utils.all_dayahead_fx = all_dayahead_fx
 
     tz = 'Europe/Istanbul'
     data_start = pd.to_datetime('3/30/2021 2:00') # Beginning after the snow cover days
-    data_end = pd.to_datetime('7/1/2021 2:00')
+    data_end = pd.to_datetime('10/1/2023 2:00')
+    # data_end = pd.to_datetime('7/1/2021 2:00') # Shorter window for testing
 
     lookback = pd.to_timedelta('28d')
     lookahead = pd.to_timedelta('1d')
 
-    stride = pd.to_timedelta('1h')  # Stride must be an integer number of hours
-    day_start_offset = pd.Timedelta('6h')  # Used for water usage aggregation, so not relevant to this program
+    one_hr = pd.to_timedelta('1h')  # Stride must be an integer number of hours
+    day_start_offset = pd.Timedelta('5h')  # Determines when the "days" start and end
 
-    intraday_methods = ['persistence', 'fx_output', 'fx_csratio', 'exog', 'sarimax', 'scaling']
+    intraday_methods = [None, 'persistence', 'fx_output', 'fx_csratio', 'exog', 'sarimax', 'scaling']
     fx_offsets = [0, 1, 2, 6]
+    day_pu_threshold = 0.1  # generate_pv_fx also has a threshold that works out to about 0.075 pu
 
     logger.info(f'Doing intraday method comparison (metrics)')
     logger.info(f'{data_start=}')
     logger.info(f'{data_end=}')
     logger.info(f'{lookback=}')
     logger.info(f'{lookahead=}')
-    logger.info(f'{stride=}')
+    logger.info('Stride is adaptive -- intraday update is run only during daylight hours')
     logger.info(f'{tz=}')
     logger.info(f'{day_start_offset=}')
     logger.info(f'dayahead_updates archive loaded from {dayahead_fx_file}')
@@ -187,7 +189,7 @@ def intraday_comparison(location):
         start_time = data_start + lookback
         end_time = data_end - lookahead
 
-        fx_record = pd.DataFrame(index=pd.date_range(start_time, end=end_time, freq=stride),
+        fx_record = pd.DataFrame(index=pd.date_range(start_time, end=end_time, freq=one_hr),
                                  columns=fx_offsets, dtype=float)
 
         # Like a for loop here but with the possibility of changing stride within the loop
@@ -195,18 +197,33 @@ def intraday_comparison(location):
             logger.info(f'Generating forecast for {start_time}')
 
             fx_window = ModelingWindow(start=start_time,
-                                       delta_t=stride,
-                                       whole_days=1,
+                                       delta_t=one_hr,
+                                       whole_days=0,
                                        day_start_offset=day_start_offset,
                                        tz=tz)
-            pv_fx = generate_pv_fx(location, fx_window, (3,), 1.0, dayahead_method, intraday_method)
-            # Save forecasts at selected offsets
-            fx_record.loc[start_time] = pv_fx[fx_offsets].values
+            try:
+                pv_fx = generate_pv_fx(location, fx_window, (3,), 1.0, dayahead_method, intraday_method)
+                # Save forecasts at selected offsets
+                if pv_fx[0] > day_pu_threshold:
+                    fx_record.loc[start_time] = pv_fx[fx_offsets].values
+            except IndexError:
+                logger.info('Missing dayahead forecast, skipping intraday update')
+            
+            # Set stride to run next optimization after some PV is expected to be available.
+            # Without available PV, there isn't really anything to optimize.
+            during_day = pv_fx > day_pu_threshold
 
+            # Go to next daylight hour if any, otherwise the next day.
+            if during_day.any():
+                next_daylight_hour = pv_fx[during_day].index[0]
+            else:
+                next_daylight_hour = fx_window.end
+            stride = max(next_daylight_hour - start_time, one_hr)
             start_time += stride
 
         # Compute error metrics for forecasts using actuals
         hist = load_hist(location, start=data_start, end=data_end)
+
         # Shift so all forecasts for the same time period are in the same row
         fx_record = pd.DataFrame({h: fx_record[h].shift(h) for h in fx_offsets})
 
@@ -214,21 +231,20 @@ def intraday_comparison(location):
         hist_day_summary = hist.loc[fx_record.index, 'P_out'].resample('1D').sum()
 
         for h in fx_offsets:
-            fx = fx_record[h].dropna()
-            results_metrics.loc[(h, intraday_method), :] = [m(hist.loc[fx.index, 'P_out'], fx)
-                                                            for m in metrics_list]
-            fx = fx_day_summary[h].dropna()
-            results_metrics_daily_total.loc[(h, intraday_method), :] = [m(hist_day_summary.loc[fx.index], fx)
+            fx = pd.DataFrame({'fx': fx_record[h], 'hist': hist['P_out']}).dropna()
+            results_metrics.loc[(h, intraday_method), :] = [m(fx['hist'], fx['fx']) for m in metrics_list]
+            fx = pd.DataFrame({'fx': fx_day_summary[h], 'hist': hist_day_summary}).dropna()
+            results_metrics_daily_total.loc[(h, intraday_method), :] = [m(fx['hist'], fx['fx'])
                                                                         for m in metrics_list]
         logger.info('=' * 60)
         logger.info(f'Overall metrics: {results_metrics.loc[(slice(None), intraday_method), :]}')
         logger.info('')
 
-    logger.info('Mean-square errors of different methods forecasting the hourly output')
+    logger.info('Error metrics of different methods forecasting the hourly output')
     logger.info(results_metrics)
     results_metrics.style.to_latex(results_dir / 'error_comparison_table.tex')
 
-    logger.info('Mean-square errors of different methods forecasting the daily total energy')
+    logger.info('Error metrics of different methods forecasting the daily total energy')
     logger.info(results_metrics_daily_total)
     results_metrics_daily_total.style.to_latex(results_dir / 'error_comparison_table_daily_total.tex')
 
@@ -239,7 +255,7 @@ def main(argv=None):
     locations = pd.read_csv('../data/locations.csv')
     location = locations[locations['name'] == 'EEE B Block'].iloc[0].to_dict()
 
-    to_do = {'examples', 'metrics'}
+    to_do = {'metrics'}  #{'examples', 'metrics'}
 
     # The dataset for intraday_update_demo should go back to 2/21/2021.
     if 'examples' in to_do:

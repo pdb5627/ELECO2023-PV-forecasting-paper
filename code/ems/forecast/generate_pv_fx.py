@@ -29,7 +29,7 @@ def generate_pv_fx(location, fx_window: ModelingWindow, dayahead_hours=(6,), sca
         'persistence': Day-ahead forecasts are a repeat of the previous day.
     :param intraday_method: String indicating the day-ahead forecast method to be used.
         See the `kind` parameter of `ems.forecast.intraday.intraday_update()`.
-        Default is 'fx_output'.
+        Default is 'fx_output'. Set to `None` for no intraday update.
     :return: Series with forecast PV values
     """
     start = fx_window.start
@@ -57,13 +57,16 @@ def generate_pv_fx(location, fx_window: ModelingWindow, dayahead_hours=(6,), sca
         fx_df = load_dayahead_fx(None, start, start, end)
         fx_df, time_max = fx_df['forecast'], fx_df['time_max']
 
+
+
+    if intraday_method is not None:
         # Apply intraday update to first day if the first hour has significant clearsky output
         during_day = time_max.iloc[0] > 0.1*time_max.max()
         if during_day:
             next_dark_hour = time_max[time_max < 0.01].index[0]
             try:
                 fx_intraday = intraday_update(location, start, lookback=lookback, lookahead=next_dark_hour - start,
-                                              kind=intraday_method)
+                                            kind=intraday_method)
                 fx_df.update(fx_intraday['forecast'])
             except Exception as e:
                 logger.info(f'Intraday update at {start} not applied. {e.args}')

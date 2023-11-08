@@ -57,8 +57,17 @@ logging.captureWarnings(True)
 logger = logging.getLogger(program_name)
 
 import matplotlib
-#matplotlib.use('TkAgg')
-matplotlib.use('PDF')
+import matplotlib.ticker as ticker
+if __name__ == '__main__':
+    # matplotlib.use('TkAgg')
+    matplotlib.use('PDF')
+
+    plt.ion() # Set matplotlib to interactive so plots don't block
+matplotlib.rcParams['font.family'] = 'serif'
+plt.rcParams.update({'font.serif': ['Times New Roman', 'Times', 'Linux Libertine O'],
+                        'legend.framealpha': 0.8,
+                        'legend.frameon': True})
+plt.rc('font', size=6)
 
 
 def main(argv=None):
@@ -69,12 +78,15 @@ def main(argv=None):
     # data_start = pd.to_datetime('3/30/2021 2:00')  # Beginning after the snow cover days
     data_start = pd.to_datetime('2/21/2021 2:00')  # Beginning of actuals
     data_end = pd.to_datetime('7/1/2021 2:00')
+    # Following two lines for testing with missing data
+    data_start = pd.to_datetime('2/21/2021 2:00')  # Beginning of actuals
+    data_end = pd.to_datetime('10/1/2023 2:00')
     lookback = pd.to_timedelta('28d')
-    lookahead = pd.to_timedelta('48h')
+    lookahead = pd.to_timedelta('24h')
 
     # For the day-ahead metrics, begin after the snow cover days.
     # Only the most recent forecast will be used (i.e. when it is one day ahead, not two days ahead).
-    metrics_range = [pd.to_datetime('3/30/2021 2:00'), data_end]
+    metrics_range = [pd.to_datetime('3/30/2021 2:00'), data_end]  # End was pd.to_datetime('7/1/2021 2:00')
 
     logger.info(f'Doing day-ahead method comparison')
     logger.info(f'{data_start=}')
@@ -90,9 +102,13 @@ def main(argv=None):
     metrics_list = [root_mean_square_error, mean_absolute_error, mean_bias_error]
     results_metrics = pd.DataFrame(columns=['RMSE', 'MAE', 'MBE'])
     results_metrics_daily_total = pd.DataFrame(columns=['RMSE', 'MAE', 'MBE'])
+    results_rmse_by_month = pd.DataFrame(columns=range(1, 13))
 
-    for fx_method in ['Persistence', 'Persistence 3 Days Avg', 'Persistence 28 Days Avg', 'SolCast Cloudiness',
-                      'SolCast GHI', 'MGM Meteogram1', 'MGM Meteogram2']:
+    # All FX methods available:
+    # ['Persistence', 'Persistence 3 Days Avg', 'Persistence 28 Days Avg', 'SolCast Cloudiness',
+    #  'SolCast GHI', 'MGM Meteogram1', 'MGM Meteogram']
+    # To save time, not running the methods that aren't reported in the paper.
+    for fx_method in ['Persistence', 'SolCast Cloudiness', 'SolCast GHI', 'MGM Meteogram']:
 
         logger.info('='*80)
         logger.info(f'Forecast Method: {fx_method}')
@@ -129,7 +145,7 @@ def main(argv=None):
             cs_ds = ClearskyModel(location, db_engine=engine)
             cs_ds.import_new_data(start=(data_start - lookback), end=(data_end + lookahead))
 
-        elif fx_method == 'MGM Meteogram2':
+        elif fx_method == 'MGM Meteogram':
             pred_col = 'meteogram_clouds'
             actual_col = 'meteogram_clouds'
             col_txt = 'Meteogram clouds'
@@ -165,7 +181,7 @@ def main(argv=None):
                 try:
                     if fx_method == 'MGM Meteogram1':
                         forecast_info = cs_ratio_forecast(location, fc_start, lookback, lookahead, cs_kind='model')
-                    elif fx_method == 'MGM Meteogram2':
+                    elif fx_method == 'MGM Meteogram':
                         forecast_info = cs_ratio_forecast(location, fc_start, lookback, lookahead, cs_kind='max')
                     elif fx_method == 'SolCast GHI':
                         forecast_info = irr_forecast(location, fc_start, lookback, lookahead)
@@ -212,6 +228,10 @@ def main(argv=None):
             results_metrics.loc[fx_method] = [m(fx_all["actual"], fx_all["forecast"]) for m in metrics_list]
             results_metrics_daily_total.loc[fx_method] = [m(fx_day_summary["actual"], fx_day_summary["forecast"])
                                                           for m in metrics_list]
+            df = all_dayahead_fx[fx_method].set_index('dt')
+            # Drop rows with very low actual PV output. Could be missing data.
+            df = df[pd.Series(df.index.date, index=df.index).map(df['actual'].groupby(df.index.date).sum() >= 1)]
+            results_rmse_by_month.loc[fx_method] = df.groupby(df.index.month).apply(lambda x: root_mean_square_error(x['actual'], x['forecast']))
 
             logger.info('='*60)
             logger.info(f'Overall metrics: {results_metrics.loc[fx_method]}, ({metrics_range[0]} - {metrics_range[1]})')
@@ -276,6 +296,26 @@ def main(argv=None):
     logger.info(results_metrics_daily_total)
     results_metrics_daily_total.style.to_latex(results_dir / 'error_comparison_table_daily_total.tex')
     results_metrics_daily_total.to_csv(results_dir / 'error_comparison_table_daily_total.csv')
+
+    logger.info('Mean-square errors of different methods by month')
+    logger.info(results_rmse_by_month)
+    results_rmse_by_month.style.to_latex(results_dir / 'error_comparison_table_rmse_by_month.tex')
+    results_rmse_by_month.to_csv(results_dir / 'error_comparison_table_rmse_by_month.csv')
+
+
+    fig, ax = plt.subplots(figsize=(3.5, 1.8))
+    results_rmse_by_month.T.plot(ax=ax, use_index=False)
+    ax.set_xlim(-0.5, 11.5)
+    ax.xaxis.set_major_locator(ticker.FixedLocator(range(12)))
+    ax.set_xticklabels(results_rmse_by_month.columns)
+    # ax.set_xticks(range(1, 13))
+    ax.set_xlabel('Month')
+    ax.set_ylabel('RMSE')
+    ax.grid()
+    ax.legend()
+    fig.tight_layout()
+    fig.savefig(results_dir / 'error_comparison_rmse_by_month.pdf')
+    plt.close()
 
     return 0
 
