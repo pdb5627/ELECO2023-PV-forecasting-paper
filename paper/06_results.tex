@@ -237,6 +237,9 @@ An additional 8\% reduction in the objective function value would be possible wi
 % Column 3 (Proposed method): /results/mpc_demo/seed=42,dayahead_method='solcast_clouds',intraday_method='sarimax'/simulated_total_cost.tex
 % Column 4 (Perfect forecast): /results/mpc_demo/seed=42,dayahead_method='oracle',intraday_method='none'/simulated_total_cost.tex
 % The data is manually entered into this file.
+% Because the optimization program is called with a time limit for each run
+% the values returned may vary slightly with the execution time.
+% The values reported here are from the published CodeOcean container.
 \begin{table}[!htb]
 	\caption{MPC Simulation Results - Objective Function Value}
 	\label{table:mpc-simulation-results}
@@ -248,13 +251,13 @@ An additional 8\% reduction in the objective function value would be possible wi
           & {\shortstack{Persistence\\Forecast}} & {\shortstack{Proposed\\Method}} & {\shortstack{Perfect\\Forecast}} \\
 		  & {(\$, 2020)} & {(\$, 2020)}                    & {(\$, 2020)} \\
 		\midrule
-		Grid energy            & 65350 & 63764 & 58052 \\
-		Battery use            &  8117 &  8178 &  8047 \\
-		Inadequate water       &   865 &    71 &    10 \\
-		Battery mode switching &   246 &   236 &   230 \\
-		Pump switching         &    94 &    98 &    80 \\
+		Grid energy            & 65350 & 63466 & 58052 \\
+		Battery use            &  8117 &  7964 &  8047 \\
+		Inadequate water       &   865 &    0 &    10 \\
+		Battery mode switching &   246 &   228 &   230 \\
+		Pump switching         &    94 &    90 &    80 \\
 		\midrule
-		TOTAL                  & 74672 & 72347 & 66418 \\
+		TOTAL                  & 74672 & 71749 & 66418 \\
 		\bottomrule
 	\end{tabular}
 \end{table}
