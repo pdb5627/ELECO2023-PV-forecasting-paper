@@ -75,10 +75,6 @@ def main(argv=None):
     locations = pd.read_csv('../data/locations.csv')
     location = locations[locations['name'] == 'EEE B Block'].iloc[0].to_dict()
 
-    # data_start = pd.to_datetime('3/30/2021 2:00')  # Beginning after the snow cover days
-    data_start = pd.to_datetime('2/21/2021 2:00')  # Beginning of actuals
-    data_end = pd.to_datetime('7/1/2021 2:00')
-    # Following two lines for testing with missing data
     data_start = pd.to_datetime('2/21/2021 2:00')  # Beginning of actuals
     data_end = pd.to_datetime('10/1/2023 2:00')
     lookback = pd.to_timedelta('28d')
@@ -86,7 +82,7 @@ def main(argv=None):
 
     # For the day-ahead metrics, begin after the snow cover days.
     # Only the most recent forecast will be used (i.e. when it is one day ahead, not two days ahead).
-    metrics_range = [pd.to_datetime('3/30/2021 2:00'), data_end]  # End was pd.to_datetime('7/1/2021 2:00')
+    metrics_range = [pd.to_datetime('3/30/2021 2:00'), data_end]
 
     logger.info(f'Doing day-ahead method comparison')
     logger.info(f'{data_start=}')
@@ -202,17 +198,6 @@ def main(argv=None):
                     dayahead_fx_plot(fig=fig, **forecast_info)
                     pdf.savefig(fig)
 
-                    # norm_by_time_max = (forecast_info['pred_col'] == 'ghi')
-                    # grouping_col = forecast_info['hist'][forecast_info['pred_col']]
-                    # weather_label, fig = ems.forecast.utils.label_by_weather(grouping_col, forecast_info['hist'],
-                    #     norm_by_time_max=norm_by_time_max, group_by_day=False)  #, fig=fig)
-                    # pdf.savefig(fig)
-                    # fig.clear()
-
-                    # for group_by_day in [False, True]:
-                    #     dayahead_fx_residual_plot(fig=fig2, group_by_day=group_by_day, **forecast_info)
-                    #     pdf.savefig(fig2)
-
                 except ValueError:
                     # TODO: Need to handle missing weather forecast data better.
                     logger.info(f'Missing weather forecast data. Skipping forecast for {fc_start}')
@@ -239,10 +224,6 @@ def main(argv=None):
             logger.info('Actual P_out - Forecast P_out Daily Sums')
             logger.info((fx_day_summary['actual'] - fx_day_summary['forecast']).describe())
             logger.info('')
-            # if actual_col is not None:
-            #     logger.info('')
-            #     logger.info(f'Actual {col_txt} - forecast {col_txt}')
-            #     logger.info((fx_day_summary[actual_col] - fx_day_summary[pred_col]).describe())
 
             plt.figure(figsize=(11.69, 8.27))
             ax = plt.subplot(2, 2, 1)
@@ -271,11 +252,6 @@ def main(argv=None):
                 box = ax.get_position()
                 ax.set_position([box.x0, box.y0 + box.height * 0.1, box.width, box.height * 0.9])
 
-            # ax = plt.subplot(2, 2, 4)
-            # skewness_plot(fx_day_summary[actual_col] - fx_day_summary[pred_col], plt.gca(), f'{col_txt} residual')
-            # (fx_day_summary['actual_ghi'] - fx_day_summary['ghi']).plot(ax=plt.gca(), kind='density')
-            # (fx_day_summary['actual_ghi'] - fx_day_summary['ghi']).plot(ax=plt.gca(), kind='box')
-            # plt.title(f'Solcast {col_txt} forecast residual')
             pdf.savefig()
             plt.close()
 
@@ -308,7 +284,6 @@ def main(argv=None):
     ax.set_xlim(-0.5, 11.5)
     ax.xaxis.set_major_locator(ticker.FixedLocator(range(12)))
     ax.set_xticklabels(results_rmse_by_month.columns)
-    # ax.set_xticks(range(1, 13))
     ax.set_xlabel('Month')
     ax.set_ylabel('RMSE')
     ax.grid()

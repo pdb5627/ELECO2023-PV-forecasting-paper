@@ -300,7 +300,6 @@ def skewness_plot(series, ax, dist_txt=None):
     y = gkde.evaluate(ind)
     [ln] = ax.plot(ind, y)
 
-    #series.plot(ax=ax, kind='density')
     marks_at = series.mean()
     mark_ht = (ax.get_ylim()[1] - ax.get_ylim()[0]) * 0.15
     mark_ymid = gkde.evaluate(marks_at)
@@ -314,14 +313,6 @@ def skewness_plot(series, ax, dist_txt=None):
     mark_ymax = mark_ymid + mark_ht/2
     median_lns = ax.vlines(marks_at, mark_ymin, mark_ymax, linestyles='dashed', color=ln.get_color())
 
-    """
-    ax.axvline(series.mean(), color='red')
-    ax.axvline(series.median(), color='green', linestyle="dotted")
-
-    q1_values = series.quantile([0.25, 0.75])
-    ax.axvline(q1_values.iloc[0], color='green', linestyle="dashed")
-    ax.axvline(q1_values.iloc[1], color='green', linestyle="dashed")
-    """
     # Make room for legend below axes
     box = ax.get_position()
     ax.set_position([box.x0, box.y0 + box.height * 0.2, box.width, box.height * 0.8])

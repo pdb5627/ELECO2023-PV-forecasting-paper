@@ -375,7 +375,6 @@ def optimize_and_simulate_from_actuals(seed=42, dayahead_method='solcast_clouds'
     tz = 'Europe/Istanbul'
     data_start = pd.to_datetime('3/30/2021 3:00')  # Beginning after the snow cover days. Must start at time for generating a day-ahead fx
     data_end = pd.to_datetime('7/1/2021 3:00')
-    #data_end = pd.to_datetime('5/6/2021 3:00')  # Shorten the time window for testing
 
     lookback = pd.to_timedelta('28d')
     lookahead = pd.to_timedelta('1d')
@@ -432,9 +431,6 @@ def optimize_and_simulate_from_actuals(seed=42, dayahead_method='solcast_clouds'
         logger.info(f'Starting forecasting for period {optimization_window.start} - {optimization_window.end}')
         # Actuals is only used for the Vuse_desired. Otherwise not used.
         actuals = generate_actuals(optimization_window, seed)
-        #fx_std = 0.25
-        #fx = generate_random_pv_fx(start_time, start_time + lookahead, fx_std, seed)
-        #pv_fx = generate_pv_fx(location, optimization_window.start, 7.5e3, optimization_window.end, 'irradiance')
         if dayahead_method == 'oracle':
             pv_fx = actuals.available_pv
         else:
@@ -455,7 +451,6 @@ def optimize_and_simulate_from_actuals(seed=42, dayahead_method='solcast_clouds'
             stride = one_hr
         else:
             next_daylight_hour = pv_fx[during_day].index[0]
-            # Alternative tz_offset = optimization_window.end_localized.tz._utcoffset
             tz_offset = optimization_window.end_localized - optimization_window.end.tz_localize(optimization_window.tz)
             # Maybe not the most efficient way to calculate the stride, but handles len(dayahead_hours) > 1
             while not((start_time + stride + tz_offset).hour in dayahead_hours or
@@ -496,10 +491,6 @@ def optimize_and_simulate_from_actuals(seed=42, dayahead_method='solcast_clouds'
                 fx_model.initialize()
                 fx_model.optimal_operation = fx_model.initialized_operation
 
-            # Save model to a file.
-            # with open(path / f'{start_time:%Y%m%d_%H%M}_fx_model.pkl', 'wb') as f:
-            #     pickle.dump(fx_model, f)
-
         decision_variables = fx_model.optimal_operation[fx_model.decision_variables]
         optimization_models[optimization_window] = fx_model
         optimization_results[optimization_window] = fx_model.optimal_operation
@@ -525,9 +516,6 @@ def optimize_and_simulate_from_actuals(seed=42, dayahead_method='solcast_clouds'
             # No need to modify Vuse_desired since it is not used in the simulation.
             simulation_model = build_model(simulation_window, actuals_for_simulation, state_data, initialize_model=False)
             simulation_model.simulate_operation(decision_variables, stride//one_hr)
-
-            # with open(path / f'{start_time:%Y%m%d_%H%M}_sim_model.pkl', 'wb') as f:
-            #     pickle.dump(simulation_model, f)
 
             if period_plots:
             # Generate and save plots
@@ -555,8 +543,6 @@ def optimize_and_simulate_from_actuals(seed=42, dayahead_method='solcast_clouds'
                         comparison_ax = plot_comparison(results_dict, col, True, params_dict, comparison_ax)
                         pdf.savefig(comparison_ax.figure)
                         comparison_ax.clear()
-                        # plt.clf()
-                        # plt.close('all')
 
         sim_results = simulation_model.simulation_results
 
@@ -588,19 +574,6 @@ def optimize_and_simulate_from_actuals(seed=42, dayahead_method='solcast_clouds'
         simulation_model.model = None
 
         start_time += stride
-
-
-    ##### Save off all results
-    # with open(path / 'all_optimization_results.pkl', 'wb') as f:
-    #     pickle.dump(optimization_results, f)
-    # with open(path / 'all_simulation_results.pkl', 'wb') as f:
-    #     pickle.dump(simulation_results, f)
-    # with open(path / 'all_simulation_models.pkl', 'wb') as f:
-    #     pickle.dump(simulation_models, f)
-    # with open(path / 'all_optimization_models.pkl', 'wb') as f:
-    #     pickle.dump(optimization_models, f)
-    # logger.info(f'All optimization and simulation models for {seed=}, {dayahead_method=}, and {intraday_method=} saved.')
-    # logger.info(f'{path=}')
 
     return optimization_models, simulation_models
 
@@ -656,8 +629,6 @@ def summarize_and_plot(optimization_models, simulation_models):
                 comparison_ax.clear()
                 comparison_ax = plot_comparison(results_dict, col, True, params_dict, comparison_ax)
                 pdf.savefig(comparison_ax.figure)
-                # plt.clf()
-                # plt.close('all')
 
     return model_with_combined_results
 
@@ -673,7 +644,6 @@ def concatenate_simulation_windows(simulation_models: Mapping[ModelingWindow, Tw
             results. (Optional)
     :return: New model object with simulation and optionally optimization results filled in.
     """
-    # TODO: Could also concatenate the time-domain model parameters (P_PV_avail, etc.)
     # Create new model object
     simulation_windows = list(simulation_models.keys())
     first_model = simulation_models[simulation_windows[0]]
@@ -689,7 +659,6 @@ def concatenate_simulation_windows(simulation_models: Mapping[ModelingWindow, Tw
     state_data.Vw2_0 = first_model.params.Vw2_0
     actuals = generate_actuals(combined_modeling_window, first_model.scenario_data.seed)
     m = build_model(combined_modeling_window, actuals, state_data, initialize_model=False)
-    #m = TwoPumpModel(first_model.params)
     m.simulation_results = pd.concat(m.simulation_results for m in simulation_models.values())
     m.params.index = m.simulation_results.index
 

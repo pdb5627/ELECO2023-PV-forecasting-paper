@@ -92,11 +92,10 @@ def intraday_update_demo(location):
         with PdfPages(pdf_fname) as pdf:
 
             for fc_start_day in ['2021-03-30', '2021-04-02', '2021-04-07', '2021-04-16', '2021-04-18', '2021-04-22',
-                                 '2021-04-26']:  # ['2021-03-30', '2021-04-02', '2021-04-07']:
+                                 '2021-04-26']:
                 ax_output.clear()
-                # ax_output.legend(handles=[])
                 ax_csratio.clear()
-                # ax_csratio.legend(handles=[])
+
 
                 fc_start = pd.to_datetime(fc_start_day + ' 02:00')
                 fc_end = pd.to_datetime(fc_start_day + ' 22:00')
@@ -150,7 +149,6 @@ def intraday_comparison(location):
     tz = 'Europe/Istanbul'
     data_start = pd.to_datetime('3/30/2021 2:00') # Beginning after the snow cover days
     data_end = pd.to_datetime('10/1/2023 2:00')
-    # data_end = pd.to_datetime('7/1/2021 2:00') # Shorter window for testing
 
     lookback = pd.to_timedelta('28d')
     lookahead = pd.to_timedelta('1d')
@@ -255,13 +253,13 @@ def main(argv=None):
     locations = pd.read_csv('../data/locations.csv')
     location = locations[locations['name'] == 'EEE B Block'].iloc[0].to_dict()
 
-    to_do = {'metrics'}  #{'examples', 'metrics'}
+    to_do = {'examples', 'metrics'}
 
     # The dataset for intraday_update_demo should go back to 2/21/2021.
     if 'examples' in to_do:
         intraday_update_demo(location)
 
-    # The dataset for comparison should go back to 3/30/2021 and should be at least 30h ahead forecast.
+    # The dataset for comparison should go back to 3/30/2021
     if 'metrics' in to_do:
         intraday_comparison(location)
 

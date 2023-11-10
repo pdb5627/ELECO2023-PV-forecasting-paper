@@ -21,6 +21,8 @@ def generate_pv_fx(location, fx_window: ModelingWindow, dayahead_hours=(6,), sca
     :param location: Location dict
     :param fx_window: ModelingWindow with start and end of forecast period and localization info.
     :param dayahead_hours: Hours of the day at which dayahead forecast should be generated. (default=(6,))
+    :param scaling_factor: Constant value by which to scale the forecast by, generally used to get from 
+        per-unit to Watts.
     :param dayahead_method: String indicating the day-ahead forecast method to be used. Possible values are as follows:
         'meteogram': Day-ahead forecasts are based on the MGM Meteogram cloudiness forecast. (default)
         'irradiance': Day-ahead forecasts are based on the SolCast irradiance forecast.
@@ -56,8 +58,6 @@ def generate_pv_fx(location, fx_window: ModelingWindow, dayahead_hours=(6,), sca
         # previously generated forecast.
         fx_df = load_dayahead_fx(None, start, start, end)
         fx_df, time_max = fx_df['forecast'], fx_df['time_max']
-
-
 
     if intraday_method is not None:
         # Apply intraday update to first day if the first hour has significant clearsky output

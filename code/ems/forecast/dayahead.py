@@ -147,42 +147,19 @@ def generic_fx(location, kind, pred_cols, fc_start, lookback='2w', lookahead='24
         forecast_df['forecast'] = forecast_df['forecast'].clip(0, fx_weather['time_max'])
         forecast_df['fx_csratio'] = calc_csratio(forecast_df['forecast'], fx_weather[cs_col])
 
-        # forecast_df['forecast_point'] = model2.predict(fx_weather[pred_cols])
-        # forecast_df['forecast_point'] = forecast_df['forecast_point'].clip(0, fx_weather['time_max'])
-
-        # forecast_samples = model2.predict_proba(fx_weather[pred_cols])
     elif kind in {'fx_csratio', 'fx_csratio2'}:
         forecast_df['fx_csratio'] = model.predict(fx_weather[pred_cols]).clip(0, 1)
         forecast_df['forecast'] = inv_csratio(forecast_df['fx_csratio'], fx_weather[cs_col])
 
-        # forecast_point = model2.predict(fx_weather[pred_cols])
-        # forecast_samples = model2.predict_proba(fx_weather[pred_cols])
-
     elif kind == 'analytical':
         raise NotImplementedError(f'Kind value ''{kind}'' not yet implemented')
-
-    # Add distribution of residuals to the forecast to represent the uncertainty
-    # Residual at each time period is divided into two weather groupings and the residuals of the matching
-    # group are returned as the distribution
-    norm_by_time_max = (pred_cols[0] == 'ghi')
-    hist_weather_label = label_by_weather(hist[pred_cols[0]], hist, norm_by_time_max=norm_by_time_max,
-                                          group_by_day=True)
-    fx_weather_label = label_by_weather(fx_weather[pred_cols[0]], hist, norm_by_time_max=norm_by_time_max,
-                                        group_by_day=True)
-
-    grouped_hist = hist['P_out_resid'].groupby([hist.index.time, hist_weather_label])
-    agg_args = {f'q{q:0.2f}': partial(np.quantile, q=q) for q in [0.05, 0.25, 0.5, 0.75, 0.95]}
-    residual_quantiles = grouped_hist.agg(**agg_args)
-    fx_time_label_df = pd.DataFrame({'time': fx_weather.index.time, 'label': fx_weather_label}, index=fx_weather.index)
-    fx_residual_quantiles = pd.merge(fx_time_label_df, residual_quantiles, how="left", left_on=['time', 'label'],
-                                     right_index=True)
 
     # Save variables for plotting (or other use)
     forecast_info = locals()
 
     save_dayahead_fx(forecast_info)
 
-    return forecast_info #pd.merge(forecast_df, fx_weather, left_index=True, right_index=True)
+    return forecast_info
 
 
 def persistence_fx(location, fc_start, lookback_for_max='4w', lookback_for_mean='24h', lookahead='24h'):
@@ -304,10 +281,8 @@ def dayahead_fx_plot(fig: Optional[matplotlib.figure.Figure] = None, plot_ahead=
         ax.set_title('Weather forecast')
         fx_weather['actual_' + pred_cols[0]] = actuals[pred_cols[0]]
         fx_weather[[pred_cols[0], 'actual_' + pred_cols[0]]].plot(ax=ax)
-        # fx_weather2['ghi'].plot(ax=ax, label='updated_ghi_fx')
 
         irr_fx_RMSE = root_mean_square_error(fx_weather['actual_' + pred_cols[0]], fx_weather[pred_cols[0]])
-        # irr_fx2_RMSE = root_mean_square_error(fx_weather['actual_ghi'], fx_weather2['ghi'])
         ax.grid(True, which='both', axis='both')
         ylim_lu = {'ghi': 1000, 'clouds': 100, 'meteogram_clouds': 100}
         try:
@@ -384,7 +359,6 @@ def dayahead_fx_residual_plot(fig: Optional[matplotlib.figure.Figure] = None, gr
     if not fig.axes or len(fig.axes) != num_plots:
         fig.clear()
         fig.subplots((num_plots - 1) // 2 + 1, 2)
-        # fig.set_layout_engine('tight')
         fig.set_tight_layout(True)
 
     if group_by_day:
